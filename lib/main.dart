@@ -1,58 +1,90 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
-void main() => runApp(const AppBarApp());
-
-class AppBarApp extends StatelessWidget {
-  const AppBarApp({super.key});
-
+class CarouselPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: AppBarExample(),
-    );
-  }
+  _CarouselPageState createState() => _CarouselPageState();
 }
 
-class AppBarExample extends StatelessWidget {
-  const AppBarExample({super.key});
+void main() {
+  runApp(MaterialApp(
+    home: CarouselPage(),
+  ));
+}
+
+class _CarouselPageState extends State<CarouselPage> {
+  int _currentImageIndex = 0;
+  //Set для неповторяемости имён
+  final Set <String> imgList = {
+    'assets/images/Default_madoka_magica_art_0.jpg',
+    'assets/images/Default_madoka_magica_art_1.jpg',
+    'assets/images/Default_madoka_magica_art_2.jpg',
+    'assets/images/Default_madoka_magica_art_3.jpg',
+  };
+  //Возможно, в Map слепить Set и List. А может и нет...
+  final List<String> titleList = [
+    '01.03.2023',
+    '02.05.2023',
+    '03.06.2023',
+    '03.01.2024',
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("05.06.2023"),
+        title: Text(titleList[_currentImageIndex]),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
+          onPressed: () {//TODO:Хех, нерабочая кнопка. Починить позже.
             Navigator.pop(context);
           },
         ),
         actions: [
           Container(
-              child: const Text.rich(
-                TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: '13',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                        TextSpan(
-                        text: '/37',)
-                        //style: TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ))
+            //отступ от правого края
+            padding: EdgeInsets.only(right: 16.0),
+            child: Text.rich(
+              TextSpan(
+                children: <TextSpan>[
+                  TextSpan(
+                    text: '${_currentImageIndex}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: '/${imgList.length}',
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
       body: Center(
-        child: Container(
-            decoration: BoxDecoration(border: Border.all()),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(40.0),
-                child: Image.asset(
-                  "assets/images/Mahou_Shoujo_Madoka_Magika.jpg",
-                  scale: 0.5,
-                ))),
+        child: CarouselSlider(
+          options: CarouselOptions(
+            //Прикольно, но руками веселее
+            ///autoPlay: true,
+            enlargeCenterPage: true,
+            //отношение сторон
+            aspectRatio: 9 / 16,
+            //Для галереи кажется логичнее конечная промотка
+            enableInfiniteScroll: false,
+            //видимость следующего фото в отношении
+            viewportFraction: 0.8,
+            onPageChanged: (index, reason) {
+              setState(() {
+                _currentImageIndex = index;
+              });
+            },
+          ),
+          items: imgList.map((item) => Container(
+            child: Center(
+              child: Image.asset(item, fit: BoxFit.cover, width: 1000),
+            ),
+          )).toList(),
+        ),
       ),
     );
   }
