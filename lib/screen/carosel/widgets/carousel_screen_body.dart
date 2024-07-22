@@ -15,13 +15,14 @@ class _CarouselScreenBodyState extends State<CarouselScreenBody> {
   List<String> images = [
     'https://c4.wallpaperflare.com/wallpaper/586/603/742/minimalism-4k-for-mac-desktop-wallpaper-preview.jpg',
     'https://c4.wallpaperflare.com/wallpaper/448/174/357/neon-4k-hd-best-for-desktop-wallpaper-preview.jpg',
-    ''
+    '',
+    ""
   ];
   late PageController _pageController;
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: 0.8, initialPage: 0);
+    _pageController = PageController(viewportFraction: 0.7, initialPage: 0);
   }
 
   int activePage = 0;
@@ -49,7 +50,7 @@ class _CarouselScreenBodyState extends State<CarouselScreenBody> {
           ),
         ),
         SizedBox(
-          height: 300,
+          height: 500,
           child: Stack(
             children: [
               PageView.builder(
@@ -64,15 +65,18 @@ class _CarouselScreenBodyState extends State<CarouselScreenBody> {
                   itemBuilder: (context, pagePosition) {
                     return Container(
                       margin: const EdgeInsets.all(10),
-                      child: Image.asset(
-                        'assets/images/$pagePosition.jpg',
+                      child: Transform.scale(
+                        scale: (pagePosition == activePage) ? 1 : 0.9,
+                        child: Image.asset(
+                          'assets/images/$pagePosition.jpg',
+                        ),
                       ),
                     );
                   }),
               Positioned(
                 width: 50,
-                height: 200,
-                top: 50,
+                height: 500,
+                top: 0,
                 child: ClipRRect(
                   child: BackdropFilter(
                     filter: ImageFilter.blur(
@@ -84,8 +88,8 @@ class _CarouselScreenBodyState extends State<CarouselScreenBody> {
               ),
               Positioned(
                 width: 50,
-                height: 200,
-                top: 50,
+                height: 500,
+                top: 0,
                 right: 0,
                 child: ClipRRect(
                   child: BackdropFilter(
