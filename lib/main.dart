@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'photocarousel.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const PhotoCarousel());
 }
 
 class MainApp extends StatelessWidget {
@@ -12,7 +13,7 @@ class MainApp extends StatelessWidget {
     return const MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Text('Hello World!'),
+          child: Text('Hello, World!'),
         ),
       ),
     );
