@@ -10,10 +10,35 @@ dependencies:
   flutter:
     sdk: flutter
 
+  cupertino_icons: ^1.0.6
+  auto_route: ^7.8.0
+  flutter_svg: ^2.0.10+1
+  flutter_bloc: ^8.1.5
+  dio: ^5.3.3
+  retrofit: ^4.0.3
+  json_annotation: ^4.9.0
+  equatable: ^2.0.5
+  intl: ^0.19.0
+  flutter_secure_storage: ^9.2.2
+  jwt_decoder: ^2.0.1
+  image_picker: ^1.1.2
+  provider: ^6.1.2
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  build_runner:
+  auto_route_generator: ^7.3.1
   flutter_lints: ^3.0.0
+  file_picker: ^8.0.2
+  video_player: ^2.4.7
+  retrofit_generator: ^8.0.1
+  json_serializable: ^6.6.2
 
 flutter:
   uses-material-design: true
+  assets:
+    - ./assets/icons/
+    - ./assets/images/
