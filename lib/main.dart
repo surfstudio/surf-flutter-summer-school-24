@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
+import 'theme_manager.dart';
+import 'first_screen.dart';
+import 'second_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeManager(),
+      child: MyApp(),
+    ),
+  );
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return Consumer<ThemeManager>(
+      builder: (context, themeManager, child) {
+        return MaterialApp(
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          themeMode: themeManager.themeMode,
+          initialRoute: '/',
+          routes: {
+            '/': (BuildContext context) => FirstScreen(),
+            '/second': (BuildContext context) => const SecondScreen(),
+          },
+        );
+      },
     );
   }
 }
