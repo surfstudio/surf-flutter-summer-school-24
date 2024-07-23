@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'dart:ui';
 
-class ImageCarousel extends StatefulWidget {
-  const ImageCarousel({super.key});
-
-  @override
-  State<StatefulWidget> createState() => _ImageCarouselState();
+void main() {
+  runApp(const MaterialApp(home: ImageCarouselScreen()));
 }
 
-class _ImageCarouselState extends State<ImageCarousel> {
+class ImageCarouselScreen extends StatefulWidget {
+  const ImageCarouselScreen({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _ImageCarouselScreenState();
+}
+
+class _ImageCarouselScreenState extends State<ImageCarouselScreen> {
   final List<String> _imagePaths = [
     'assets/image1.jpg',
     'assets/image2.jpg',
@@ -17,79 +22,133 @@ class _ImageCarouselState extends State<ImageCarousel> {
     'assets/image5.jpg',
   ];
   final int _allImages = 5;
-  final int _currentImage = 0;
+  int _currentImage = 0;
+
+  final CarouselController _carouselController = CarouselController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {},
-        ),
-        title: const Center(
-          child: Text(
-            "21.05.2023",
-            style: TextStyle(
-              fontSize: 18,
-              fontFamily: 'Roboto',
-            ),
+      appBar: CarouselHeader(
+        currentImage: _currentImage,
+        allImages: _allImages,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 30, bottom: 72),
+        child: Center(
+          child: ImageCarousel(
+            imagePaths: _imagePaths,
+            carouselController: _carouselController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentImage = index;
+              });
+            },
           ),
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Center(
-              child: Text(
-                "${_currentImage + 1}/$_allImages",
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-      body: Center(
-        child: _CarouselSlider(_imagePaths, _currentImage, setState),
       ),
     );
   }
 }
 
-class _CarouselSlider extends StatelessWidget {
-  int _currentImage;
-  final List<String> _imagePath;
-  final Function callback;
-  List<Container> images = [];
+class CarouselHeader extends StatelessWidget implements PreferredSizeWidget {
+  final int currentImage;
+  final int allImages;
 
-  _CarouselSlider(this._imagePath, this._currentImage, this.callback) {
-    for (String path in _imagePath) {
-      this.images.add(Container(
-          child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(35.0),
-                  child: Image.asset(
-                    path,
-                    fit: BoxFit.fill,
-                  )))));
-    }
-  }
+  const CarouselHeader({
+    super.key,
+    required this.currentImage,
+    required this.allImages,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return CarouselSlider(
+    return AppBar(
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {},
+      ),
+      title: const Text(
+        "21.05.2023",
+        style: TextStyle(
+          fontSize: 18,
+          fontFamily: 'Roboto',
+        ),
+      ),
+      centerTitle: true,
+      actions: [
+        Container(
+          margin: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+          child: Center(
+            child: Text(
+              "${currentImage + 1}/$allImages",
+              style: const TextStyle(
+                fontSize: 18,
+                fontFamily: 'Roboto',
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class ImageCarousel extends StatelessWidget {
+  final List<String> imagePaths;
+  final CarouselController carouselController;
+  final ValueChanged<int> onPageChanged;
+
+  const ImageCarousel({
+    super.key,
+    required this.imagePaths,
+    required this.carouselController,
+    required this.onPageChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CarouselSlider.builder(
+      carouselController: carouselController,
+      itemCount: imagePaths.length,
+      itemBuilder: (context, index, realIndex) {
+        bool isCenter = index == context.findAncestorStateOfType<_ImageCarouselScreenState>()!._currentImage;
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(35.0),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.asset(
+                imagePaths[index],
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
+              if (!isCenter)
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                  child: Container(
+                    color: Colors.black.withOpacity(0),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
       options: CarouselOptions(
-        height: 900,
+        height: double.infinity,
         enlargeCenterPage: true,
         initialPage: 0,
         enableInfiniteScroll: true,
-        enlargeFactor: 0.26,
-        viewportFraction: 0.85,
+        viewportFraction: 0.832,
+        enlargeStrategy: CenterPageEnlargeStrategy.scale,
+        enlargeFactor: 0.3,
+        onPageChanged: (index, reason) {
+          onPageChanged(index);
+        },
       ),
-      items: images,
     );
   }
 }
