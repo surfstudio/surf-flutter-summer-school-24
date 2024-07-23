@@ -40,29 +40,29 @@ class _ImageBoxState extends State<ImageBox> {
   @override
   Widget build(BuildContext context) {
     return SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 4.0,
-                crossAxisSpacing: 4.0,
-                childAspectRatio: 1.0,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          mainAxisSpacing: 4.0,
+          crossAxisSpacing: 4.0,
+          childAspectRatio: 1.0,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            return GestureDetector(
+              onTap: () {
+                context.router.push(const ImageViewRoute());
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(2),
+                child: Image.network(
+                  images[index],
+                  fit: BoxFit.cover,
+                ),
               ),
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return GestureDetector(
-                    onTap: () {
-                      context.router.push(const ImageViewRoute());
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
-                        images[index],
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
-                childCount: images.length,
-              )
-    );
+            );
+          },
+          childCount: images.length,
+        )
+      );
   }
 }
