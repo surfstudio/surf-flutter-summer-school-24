@@ -79,8 +79,9 @@ class _CarouselPageState extends State<CarouselPage> {
               });
             },
           ),
-          items: imgList.map((item) => Container(
-            child: Center(
+          items: imgList.map((item) => Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20), // Скругление углов
               child: Image.asset(item, fit: BoxFit.cover, width: 1000),
             ),
           )).toList(),
