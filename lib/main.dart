@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'imagecarousel.dart';
+import 'screens/image_carousel_screen.dart';
 
 void main() {
   runApp(MyApp());
