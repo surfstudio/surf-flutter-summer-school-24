@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-final List<String> imgList = [
+final Set<String> imgList = {
   'assets/images/Default_madoka_magica_art_0.jpg',
   'assets/images/Default_madoka_magica_art_1.jpg',
   'assets/images/Default_madoka_magica_art_2.jpg',
@@ -19,7 +19,7 @@ final List<String> imgList = [
   'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_with_bow_in_spa_1.jpg',
   'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_with_bow_in_spa_2.jpg',
   'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_with_bow_in_spa_3.jpg',
-];
+};
 
 class CarouselPage extends StatefulWidget {
   final int initialIndex;
@@ -191,7 +191,7 @@ class _GridViewPageState extends State<GridViewPage> {
             },
             child: GridTile(
               child: Image.asset(
-                imgList[index],
+                imgList.toList()[index],
                 fit: BoxFit.cover,
               ),
             ),
