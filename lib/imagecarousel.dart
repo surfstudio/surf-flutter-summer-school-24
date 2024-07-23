@@ -18,7 +18,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
   ];
 
   final PageController _pageController = PageController(
-    viewportFraction: 0.4, // Увеличиваем размер страницы для больших изображений
+    viewportFraction: 0.7,
   );
 
   final ValueNotifier<int> _currentPageNotifier = ValueNotifier<int>(0);
@@ -57,7 +57,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // Функционал кнопки "Назад" будет добавлен позже
+
           },
         ),
         title: Center(
@@ -116,7 +116,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
         }
 
         final difference = (index - (page ?? 0)).abs();
-        final scale = (1 - difference * 0.3).clamp(0.7, 1.0); // Уменьшаем крайние фото сильнее
+        final scale = (1 - difference * 0.3).clamp(0.7, 1.0);
         final blur = (difference * 10).clamp(0.0, 10.0);
 
         return Center(
