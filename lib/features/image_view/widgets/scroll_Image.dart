@@ -22,7 +22,7 @@ class _ScrollImageState extends State<ScrollImage> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: 0.8, initialPage: 1);
+    _pageController = PageController(viewportFraction: 0.8, initialPage: 0);
   }
 
   @override
@@ -35,7 +35,7 @@ class _ScrollImageState extends State<ScrollImage> {
             width: MediaQuery.of(context).size.width,
             height: 600,
             child: PageView.builder(
-              itemCount:  images.length,
+              itemCount: images.length,
               pageSnapping: true,
               controller: _pageController,
               onPageChanged: (page) {
@@ -60,14 +60,13 @@ class _ScrollImageState extends State<ScrollImage> {
       curve: Curves.easeInCubic,
       margin: EdgeInsets.all(margin),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        image: DecorationImage(
-          image: NetworkImage(
-            images[pagePosition],
-          ),
-          fit: BoxFit.cover,
-        )
-      ),
+          borderRadius: BorderRadius.circular(30),
+          image: DecorationImage(
+            image: NetworkImage(
+              images[pagePosition],
+            ),
+            fit: BoxFit.cover,
+          )),
     );
   }
 
@@ -82,7 +81,7 @@ class _ScrollImageState extends State<ScrollImage> {
           child: widget,
         );
       },
-      child: Container (
+      child: Container(
         margin: const EdgeInsets.all(10),
         child: Image.network(images[pagePosition]),
       ),
