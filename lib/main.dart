@@ -10,6 +10,14 @@ final List<String> imgList = [
   'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_1.jpg',
   'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_2.jpg',
   'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_3.jpg',
+  'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_with_bow_0.jpg',
+  'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_with_bow_1.jpg',
+  'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_with_bow_2.jpg',
+  'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_with_bow_3.jpg',
+  'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_with_bow_in_spa_0.jpg',
+  'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_with_bow_in_spa_1.jpg',
+  'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_with_bow_in_spa_2.jpg',
+  'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_with_bow_in_spa_3.jpg',
 ];
 
 class CarouselPage extends StatefulWidget {
@@ -32,7 +40,21 @@ class _CarouselPageState extends State<CarouselPage> {
     '03.04.2024',
     '01.06.2024',
     '02.09.2025',
+    '01.03.2025',
+    '02.05.2025',
+    '03.06.2025',
+    '03.01.2025',
+    '04.01.2026',
+    '03.04.2026',
+    '01.06.2026',
+    '02.09.2026',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _currentImageIndex = widget.initialIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +70,7 @@ class _CarouselPageState extends State<CarouselPage> {
         ),
         actions: [
           Container(
-            padding: const EdgeInsets.only(right: 16.0),
+            padding: const EdgeInsets.only(right: 36.0),
             child: Text.rich(
               TextSpan(
                 children: <TextSpan>[
@@ -113,7 +135,7 @@ class _GridViewPageState extends State<GridViewPage> {
       ),
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+          crossAxisCount: 3,
           crossAxisSpacing: 8.0,
           mainAxisSpacing: 8.0,
           childAspectRatio: 1.0,
@@ -146,7 +168,7 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/', // Установите начальный маршрут на '/'
     routes: {
-      '/': (context) => GridViewPage(), // Установите GridViewPage как главную страницу
+      '/': (context) => const GridViewPage(), // Установите GridViewPage как главную страницу
       '/carousel': (context) => CarouselPage(initialIndex: 0), // Добавьте маршрут к CarouselPage, но этот маршрут будет использоваться только при прямом вызове с начальным индексом
     },
   ));
