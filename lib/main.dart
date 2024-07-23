@@ -147,7 +147,7 @@ class _GridViewPageState extends State<GridViewPage> {
                     child: Column(
                       children: [
                         ListTile(
-                          leading: const Icon(Icons.brightness_6),
+                          leading: const Icon(Icons.light_mode),
                           title: const Text('Темная тема'),
                           onTap: () {
                             widget.onThemeChanged(ThemeMode.dark);
@@ -155,7 +155,7 @@ class _GridViewPageState extends State<GridViewPage> {
                           },
                         ),
                         ListTile(
-                          leading: const Icon(Icons.brightness_7),
+                          leading: const Icon(Icons.dark_mode),
                           title: const Text('Светлая тема'),
                           onTap: () {
                             widget.onThemeChanged(ThemeMode.light);
