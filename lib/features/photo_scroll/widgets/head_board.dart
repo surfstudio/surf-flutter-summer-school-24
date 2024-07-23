@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:surf_flutter_summer_school_24/features/photo_scroll/widgets/photo_number.dart';
 
 class HeadBoard extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
+  final String _title;
+  final int _photoListSize;
+  final ValueNotifier<int> currentPhotoIndexNotifier;
 
-  const HeadBoard({super.key, required this.title});
+  const HeadBoard(
+      {super.key,
+      required String title,
+      required this.currentPhotoIndexNotifier,
+      required int photoListSize})
+      : _photoListSize = photoListSize,
+        _title = title;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -13,9 +20,15 @@ class HeadBoard extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       leading: const BackButton(),
-      title: Text(title),
+      title: Text(_title),
       centerTitle: true,
-      actions: const [PhotoNumber()],
+      actions: [
+        ValueListenableBuilder<int>(
+            valueListenable: currentPhotoIndexNotifier,
+            builder: (context, value, child) {
+              return Text('$value/$_photoListSize');
+            })
+      ],
     );
   }
 }
