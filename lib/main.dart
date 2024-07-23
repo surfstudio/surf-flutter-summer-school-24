@@ -73,6 +73,8 @@ class _CarouselPageState extends State<CarouselPage> {
             padding: const EdgeInsets.only(right: 36.0),
             child: Text.rich(
               TextSpan(
+                style: const TextStyle(
+                    fontSize: 22), // Установите общий размер текста здесь
                 children: <TextSpan>[
                   TextSpan(
                     text: '${_currentImageIndex + 1}',
@@ -168,8 +170,11 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/', // Установите начальный маршрут на '/'
     routes: {
-      '/': (context) => const GridViewPage(), // Установите GridViewPage как главную страницу
-      '/carousel': (context) => CarouselPage(initialIndex: 0), // Добавьте маршрут к CarouselPage, но этот маршрут будет использоваться только при прямом вызове с начальным индексом
+      '/': (context) =>
+          const GridViewPage(), // Установите GridViewPage как главную страницу
+      '/carousel': (context) => const CarouselPage(
+          initialIndex:
+              0), // Добавьте маршрут к CarouselPage, но этот маршрут будет использоваться только при прямом вызове с начальным индексом
     },
   ));
 }
