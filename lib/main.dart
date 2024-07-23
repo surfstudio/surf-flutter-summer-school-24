@@ -1,32 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+final List<String> imgList = [
+  'assets/images/Default_madoka_magica_art_0.jpg',
+  'assets/images/Default_madoka_magica_art_1.jpg',
+  'assets/images/Default_madoka_magica_art_2.jpg',
+  'assets/images/Default_madoka_magica_art_3.jpg',
+  'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_0.jpg',
+  'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_1.jpg',
+  'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_2.jpg',
+  'assets/images/Default_madoka_magica_from_anime_Madoka_Magica_3.jpg',
+];
+
 class CarouselPage extends StatefulWidget {
+  const CarouselPage({super.key});
+
   @override
   _CarouselPageState createState() => _CarouselPageState();
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: CarouselPage(),
-  ));
-}
-
 class _CarouselPageState extends State<CarouselPage> {
   int _currentImageIndex = 0;
-  //Set для неповторяемости имён
-  final Set <String> imgList = {
-    'assets/images/Default_madoka_magica_art_0.jpg',
-    'assets/images/Default_madoka_magica_art_1.jpg',
-    'assets/images/Default_madoka_magica_art_2.jpg',
-    'assets/images/Default_madoka_magica_art_3.jpg',
-  };
-  //Возможно, в Map слепить Set и List. А может и нет...
+
   final List<String> titleList = [
     '01.03.2023',
     '02.05.2023',
     '03.06.2023',
     '03.01.2024',
+    '04.01.2024',
+    '03.04.2024',
+    '01.06.2024',
+    '02.09.2025',
   ];
 
   @override
@@ -37,20 +41,19 @@ class _CarouselPageState extends State<CarouselPage> {
         title: Text(titleList[_currentImageIndex]),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {//TODO:Хех, нерабочая кнопка. Починить позже.
+          onPressed: () {
             Navigator.pop(context);
           },
         ),
         actions: [
           Container(
-            //отступ от правого края
-            padding: EdgeInsets.only(right: 16.0),
+            padding: const EdgeInsets.only(right: 16.0),
             child: Text.rich(
               TextSpan(
                 children: <TextSpan>[
                   TextSpan(
-                    text: '${_currentImageIndex}',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    text: '${_currentImageIndex + 1}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
                     text: '/${imgList.length}',
@@ -64,14 +67,9 @@ class _CarouselPageState extends State<CarouselPage> {
       body: Center(
         child: CarouselSlider(
           options: CarouselOptions(
-            //Прикольно, но руками веселее
-            ///autoPlay: true,
             enlargeCenterPage: true,
-            //отношение сторон
             aspectRatio: 9 / 16,
-            //Для галереи кажется логичнее конечная промотка
             enableInfiniteScroll: false,
-            //видимость следующего фото в отношении
             viewportFraction: 0.8,
             onPageChanged: (index, reason) {
               setState(() {
@@ -79,14 +77,65 @@ class _CarouselPageState extends State<CarouselPage> {
               });
             },
           ),
-          items: imgList.map((item) => Center(
+          items: imgList
+          .map((item) => Center(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(20), // Скругление углов
+              borderRadius: BorderRadius.circular(20),
               child: Image.asset(item, fit: BoxFit.cover, width: 1000),
             ),
-          )).toList(),
+          ))
+          .toList(),
         ),
       ),
     );
   }
+}
+
+class GridViewPage extends StatefulWidget {
+  const GridViewPage({super.key});
+
+  @override
+  _GridViewPageState createState() => _GridViewPageState();
+}
+
+class _GridViewPageState extends State<GridViewPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          'Постограмм',
+          style: TextStyle(height: 20, fontSize: 30, fontFamily: 'italic'),
+        ),
+      ),
+      body: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 8.0,
+          childAspectRatio: 1.0,
+        ),
+        itemCount: imgList.length,
+        itemBuilder: (context, index) {
+          return GridTile(
+            child: Image.asset(
+              imgList[index],
+              fit: BoxFit.cover,
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(MaterialApp(
+    initialRoute: '/', // Установите начальный маршрут на '/'
+  routes: {
+    '/': (context) => GridViewPage(), // Установите GridViewPage как главную страницу
+    '/carousel': (context) => CarouselPage(), // Добавьте маршрут к CarouselPage
+  },
+  ));
 }
