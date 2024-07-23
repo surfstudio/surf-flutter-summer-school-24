@@ -13,14 +13,15 @@ final List<String> imgList = [
 ];
 
 class CarouselPage extends StatefulWidget {
-  const CarouselPage({super.key});
+  final int initialIndex;
+  const CarouselPage({super.key, required this.initialIndex});
 
   @override
   _CarouselPageState createState() => _CarouselPageState();
 }
 
 class _CarouselPageState extends State<CarouselPage> {
-  int _currentImageIndex = 0;
+  late int _currentImageIndex;
 
   final List<String> titleList = [
     '01.03.2023',
@@ -71,6 +72,7 @@ class _CarouselPageState extends State<CarouselPage> {
             aspectRatio: 9 / 16,
             enableInfiniteScroll: false,
             viewportFraction: 0.8,
+            initialPage: widget.initialIndex,
             onPageChanged: (index, reason) {
               setState(() {
                 _currentImageIndex = index;
@@ -78,13 +80,13 @@ class _CarouselPageState extends State<CarouselPage> {
             },
           ),
           items: imgList
-          .map((item) => Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.asset(item, fit: BoxFit.cover, width: 1000),
-            ),
-          ))
-          .toList(),
+              .map((item) => Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(item, fit: BoxFit.cover, width: 1000),
+                    ),
+                  ))
+              .toList(),
         ),
       ),
     );
@@ -118,10 +120,20 @@ class _GridViewPageState extends State<GridViewPage> {
         ),
         itemCount: imgList.length,
         itemBuilder: (context, index) {
-          return GridTile(
-            child: Image.asset(
-              imgList[index],
-              fit: BoxFit.cover,
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CarouselPage(initialIndex: index),
+                ),
+              );
+            },
+            child: GridTile(
+              child: Image.asset(
+                imgList[index],
+                fit: BoxFit.cover,
+              ),
             ),
           );
         },
@@ -133,9 +145,9 @@ class _GridViewPageState extends State<GridViewPage> {
 void main() {
   runApp(MaterialApp(
     initialRoute: '/', // Установите начальный маршрут на '/'
-  routes: {
-    '/': (context) => GridViewPage(), // Установите GridViewPage как главную страницу
-    '/carousel': (context) => CarouselPage(), // Добавьте маршрут к CarouselPage
-  },
+    routes: {
+      '/': (context) => GridViewPage(), // Установите GridViewPage как главную страницу
+      '/carousel': (context) => CarouselPage(initialIndex: 0), // Добавьте маршрут к CarouselPage, но этот маршрут будет использоваться только при прямом вызове с начальным индексом
+    },
   ));
 }
