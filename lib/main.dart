@@ -118,7 +118,8 @@ class _CarouselPageState extends State<CarouselPage> {
 }
 
 class GridViewPage extends StatefulWidget {
-  const GridViewPage({super.key});
+  final ValueChanged<ThemeMode> onThemeChanged;
+  const GridViewPage({super.key, required this.onThemeChanged});
 
   @override
   _GridViewPageState createState() => _GridViewPageState();
@@ -132,8 +133,43 @@ class _GridViewPageState extends State<GridViewPage> {
         centerTitle: true,
         title: const Text(
           'Постограмм',
-          style: TextStyle(height: 20, fontSize: 30, fontFamily: 'italic'),
+          style: TextStyle(height: 20, fontSize: 30, fontFamily: 'italic'),//TODO: заменить шрифт
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return SizedBox(
+                    height: 150,
+                    child: Column(
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.brightness_6),
+                          title: const Text('Темная тема'),
+                          onTap: () {
+                            widget.onThemeChanged(ThemeMode.dark);
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.brightness_7),
+                          title: const Text('Светлая тема'),
+                          onTap: () {
+                            widget.onThemeChanged(ThemeMode.light);
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -167,14 +203,34 @@ class _GridViewPageState extends State<GridViewPage> {
 }
 
 void main() {
-  runApp(MaterialApp(
-    initialRoute: '/', // Установите начальный маршрут на '/'
-    routes: {
-      '/': (context) =>
-          const GridViewPage(), // Установите GridViewPage как главную страницу
-      '/carousel': (context) => const CarouselPage(
-          initialIndex:
-              0), // Добавьте маршрут к CarouselPage, но этот маршрут будет использоваться только при прямом вызове с начальным индексом
-    },
-  ));
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  void _toggleTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: _themeMode,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => GridViewPage(onThemeChanged: _toggleTheme),
+        '/carousel': (context) => const CarouselPage(initialIndex: 0),
+      },
+    );
+  }
 }
