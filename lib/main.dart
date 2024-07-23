@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 final List<String> imgList = [
   'assets/images/Default_madoka_magica_art_0.jpg',
@@ -43,7 +44,7 @@ class _CarouselPageState extends State<CarouselPage> {
     '01.03.2025',
     '02.05.2025',
     '03.06.2025',
-    '03.01.2025',
+    '03.01.2026',
     '04.01.2026',
     '03.04.2026',
     '01.06.2026',
@@ -119,7 +120,8 @@ class _CarouselPageState extends State<CarouselPage> {
 
 class GridViewPage extends StatefulWidget {
   final ValueChanged<ThemeMode> onThemeChanged;
-  const GridViewPage({super.key, required this.onThemeChanged});
+  final ThemeMode currentThemeMode;
+  const GridViewPage({super.key, required this.onThemeChanged, required this.currentThemeMode});
 
   @override
   _GridViewPageState createState() => _GridViewPageState();
@@ -129,36 +131,34 @@ class _GridViewPageState extends State<GridViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+            appBar: AppBar(
         centerTitle: true,
         title: const Text(
           'Постограмм',
-          style: TextStyle(height: 20, fontSize: 30, fontFamily: 'italic'),//TODO: заменить шрифт
+          style: TextStyle(height: 20, fontSize: 30, fontFamily: 'Caveat'),//TODO: заменить шрифт
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.more_vert),
+            icon: Icon(Icons.more_vert),
             onPressed: () {
               showModalBottomSheet(
                 context: context,
                 builder: (context) {
                   return SizedBox(
-                    height: 150,
+                    height: 80,
                     child: Column(
                       children: [
                         ListTile(
-                          leading: const Icon(Icons.light_mode),
-                          title: const Text('Темная тема'),
+                          leading: Icon(widget.currentThemeMode == ThemeMode.light
+                              ? Icons.light_mode
+                              : Icons.dark_mode),
+                          title: Text('Тема'), 
+                          trailing: Text(widget.currentThemeMode == ThemeMode.light ? 'Светлая':'Темная',
+                          style: const TextStyle(fontSize: 20.0,)),
                           onTap: () {
-                            widget.onThemeChanged(ThemeMode.dark);
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.dark_mode),
-                          title: const Text('Светлая тема'),
-                          onTap: () {
-                            widget.onThemeChanged(ThemeMode.light);
+                            widget.onThemeChanged(widget.currentThemeMode == ThemeMode.light
+                                ? ThemeMode.dark
+                                : ThemeMode.light);
                             Navigator.pop(context);
                           },
                         ),
@@ -228,8 +228,11 @@ class _MyAppState extends State<MyApp> {
       themeMode: _themeMode,
       initialRoute: '/',
       routes: {
-        '/': (context) => GridViewPage(onThemeChanged: _toggleTheme),
-        '/carousel': (context) => const CarouselPage(initialIndex: 0),
+        '/': (context) => GridViewPage(
+              onThemeChanged: _toggleTheme,
+              currentThemeMode: _themeMode,
+            ),
+        '/carousel': (context) => CarouselPage(initialIndex: 0),
       },
     );
   }
