@@ -1,4 +1,3 @@
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:surf_flutter_summer_school_24/router/router.dart';
@@ -14,12 +13,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    //final theme = Theme.of(context);
     return const AutoTabsRouter(
-      duration: const Duration(microseconds: 250),
-      routes: [
-        TapeRoute()
-      ],
+      duration: Duration(microseconds: 250),
+      routes: [TapeRoute()],
     );
   }
 }
