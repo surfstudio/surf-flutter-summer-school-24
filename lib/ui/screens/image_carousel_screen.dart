@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'package:surf_flutter_summer_school_24/di/dependency_injector.dart';
 
-import 'package:surf_flutter_summer_school_24/domain/interactors/advanced_image_interactor.dart';
-import 'package:surf_flutter_summer_school_24/domain/models/advanced_image.dart';
+import '../../domain/models/theme_controller.dart';
 
 class ImageCarouselScreen extends StatefulWidget {
   final List<String> imagePaths;
@@ -19,19 +19,20 @@ class ImageCarouselScreen extends StatefulWidget {
 }
 
 class _ImageCarouselScreenState extends State<ImageCarouselScreen> {
-  late int _currentImage;
-  late final PageController _pageController;
+  late ValueNotifier<int> _currentImageNotifier;
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    _currentImage = widget.initialIndex;
-    _pageController = PageController(initialPage: _currentImage, viewportFraction: 0.8);
+    _currentImageNotifier = ValueNotifier<int>(widget.initialIndex);
+    _pageController = PageController(initialPage: widget.initialIndex, viewportFraction: 0.8);
     _pageController.addListener(_onPageChanged);
   }
 
   @override
   void dispose() {
+    _currentImageNotifier.dispose();
     _pageController
       ..removeListener(_onPageChanged)
       ..dispose();
@@ -39,27 +40,34 @@ class _ImageCarouselScreenState extends State<ImageCarouselScreen> {
   }
 
   void _onPageChanged() {
-    final prevPage = _currentImage;
-    _currentImage = _pageController.page?.round() ?? _currentImage;
-    if (prevPage != _currentImage) {
-      setState(() {});
+    final page = _pageController.page?.round() ?? widget.initialIndex;
+    if (_currentImageNotifier.value != page) {
+      _currentImageNotifier.value = page;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final themeController = DependencyInjector().themeController;
+
     return Scaffold(
       appBar: CarouselHeader(
-        currentImage: _currentImage,
+        currentImageNotifier: _currentImageNotifier,
         allImages: widget.imagePaths.length,
+        themeController: themeController,
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 30, bottom: 72),
         child: Center(
-          child: ImageCarousel(
-            imagePaths: widget.imagePaths,
-            pageController: _pageController,
-            currentPage: _currentImage,
+          child: ValueListenableBuilder<int>(
+            valueListenable: _currentImageNotifier,
+            builder: (context, currentPage, child) {
+              return ImageCarousel(
+                imagePaths: widget.imagePaths,
+                pageController: _pageController,
+                currentPage: currentPage,
+              );
+            },
           ),
         ),
       ),
@@ -68,54 +76,61 @@ class _ImageCarouselScreenState extends State<ImageCarouselScreen> {
 }
 
 class CarouselHeader extends StatelessWidget implements PreferredSizeWidget {
-  final int currentImage;
+  final ValueNotifier<int> currentImageNotifier;
   final int allImages;
+  final ThemeController themeController;
 
   const CarouselHeader({
     super.key,
-    required this.currentImage,
+    required this.currentImageNotifier,
     required this.allImages,
+    required this.themeController,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final isDarkMode = themeController.themeMode.value == ThemeMode.dark;
 
-    return AppBar(
-      leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back,
-          color: isDarkMode ? Colors.white : Colors.black,
-        ),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
-      title: Text(
-        "21.05.2023",
-        style: TextStyle(
-          fontSize: 18,
-          fontFamily: 'Roboto',
-          color: isDarkMode ? Colors.white : Colors.black,
-        ),
-      ),
-      centerTitle: true,
-      actions: [
-        Container(
-          margin: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-          child: Center(
-            child: Text(
-              "${currentImage + 1}/$allImages",
-              style: TextStyle(
-                fontSize: 18,
-                fontFamily: 'Roboto',
-                color: isDarkMode ? Colors.white : Colors.black,
-              ),
+    return ValueListenableBuilder<int>(
+      valueListenable: currentImageNotifier,
+      builder: (context, currentImage, child) {
+        return AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: isDarkMode ? Colors.white : Colors.black,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Text(
+            "21.05.2023",
+            style: TextStyle(
+              fontSize: 18,
+              fontFamily: 'Roboto',
+              color: isDarkMode ? Colors.white : Colors.black,
             ),
           ),
-        )
-      ],
-      backgroundColor: isDarkMode ? Colors.black : Colors.white,
+          centerTitle: true,
+          actions: [
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+              child: Center(
+                child: Text(
+                  "${currentImage + 1}/$allImages",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontFamily: 'Roboto',
+                    color: isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+              ),
+            )
+          ],
+          backgroundColor: isDarkMode ? Colors.black : Colors.white,
+        );
+      },
     );
   }
 
@@ -123,7 +138,7 @@ class CarouselHeader extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class ImageCarousel extends StatefulWidget {
+class ImageCarousel extends StatelessWidget {
   final List<String> imagePaths;
   final PageController pageController;
   final int currentPage;
@@ -136,17 +151,12 @@ class ImageCarousel extends StatefulWidget {
   });
 
   @override
-  State<ImageCarousel> createState() => _ImageCarouselState();
-}
-
-class _ImageCarouselState extends State<ImageCarousel> {
-  @override
   Widget build(BuildContext context) {
     return PageView.builder(
-      controller: widget.pageController,
-      itemCount: widget.imagePaths.length,
+      controller: pageController,
+      itemCount: imagePaths.length,
       itemBuilder: (context, index) {
-        final scale = widget.currentPage == index ? 1.0 : 0.9;
+        final scale = currentPage == index ? 1.0 : 0.9;
         return Transform.scale(
           scale: scale,
           child: ClipRRect(
@@ -154,8 +164,8 @@ class _ImageCarouselState extends State<ImageCarousel> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Image.asset(widget.imagePaths[index], fit: BoxFit.cover),
-                if (widget.currentPage != index)
+                Image.asset(imagePaths[index], fit: BoxFit.cover),
+                if (currentPage != index)
                   BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                     child: Container(

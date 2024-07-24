@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:surf_flutter_summer_school_24/di/theme_inherited.dart';
+import 'package:surf_flutter_summer_school_24/di/dependency_injector.dart';
 import 'image_carousel_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -10,13 +10,21 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  Future<bool> _loadImages() async {
+  final ValueNotifier<bool> _imagesLoaded = ValueNotifier<bool>(false);
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImages();
+  }
+
+  Future<void> _loadImages() async {
     await Future.delayed(const Duration(seconds: 2));
-    return Future.value(true); // is loading success
+    _imagesLoaded.value = true;
   }
 
   void _showBottomSheet() {
-    final themeController = ThemeInherited.of(context);
+    final themeController = DependencyInjector().themeController;
 
     showModalBottomSheet(
       context: context,
@@ -58,7 +66,9 @@ class _MainScreenState extends State<MainScreen> {
                   'Загрузить фото',
                   style: TextStyle(fontSize: 18, color: textColor),
                 ),
-                onTap: () {},
+                onTap: () {
+                  //TODO: потом
+                },
               ),
             ],
           ),
@@ -68,7 +78,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   String _getThemeImage(String imageName) {
-    final themeController = ThemeInherited.of(context);
+    final themeController = DependencyInjector().themeController;
     final isDarkMode = themeController.themeMode.value == ThemeMode.dark;
 
     switch (imageName) {
@@ -85,24 +95,16 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainScreenAppBar(onOptionsPressed: _showBottomSheet),
-      body: FutureBuilder<bool>(
-        future: _loadImages(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return ImageGrid(
-              isBlurred: true,
-              isDarkMode: ThemeInherited.of(context).themeMode.value == ThemeMode.dark,
-              onImageTap: (index) {
-                // Do nothing when blurred
-              },
-            );
-          } else if (snapshot.hasError || !snapshot.hasData || !snapshot.data!) {
-            return const ErrorView();
-          } else {
-            return ImageGrid(
-              isBlurred: false,
-              isDarkMode: ThemeInherited.of(context).themeMode.value == ThemeMode.dark,
-              onImageTap: (index) {
+      body: ValueListenableBuilder<bool>(
+        valueListenable: _imagesLoaded,
+        builder: (context, isLoaded, child) {
+          final themeController = DependencyInjector().themeController;
+
+          return ImageGrid(
+            isBlurred: !isLoaded,
+            isDarkMode: themeController.themeMode.value == ThemeMode.dark,
+            onImageTap: (index) {
+              if (isLoaded) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -112,9 +114,9 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 );
-              },
-            );
-          }
+              }
+            },
+          );
         },
       ),
     );
@@ -128,7 +130,7 @@ class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeController = ThemeInherited.of(context);
+    final themeController = DependencyInjector().themeController;
     final isDarkMode = themeController.themeMode.value == ThemeMode.dark;
 
     return AppBar(
@@ -160,7 +162,12 @@ class ImageGrid extends StatelessWidget {
   final List<String> _loadedImages = List.generate(30, (index) => 'assets/image1.jpg');
   final Function(int) onImageTap;
 
-  ImageGrid({super.key, required this.isBlurred, required this.isDarkMode, required this.onImageTap});
+  ImageGrid({
+    super.key,
+    required this.isBlurred,
+    required this.isDarkMode,
+    required this.onImageTap,
+  });
 
   @override
   Widget build(BuildContext context) {
