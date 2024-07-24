@@ -7,33 +7,6 @@ import 'package:surf_flutter_summer_school_24/app/uikit/theme/theme_data.dart';
 import 'package:surf_flutter_summer_school_24/app/uikit/styles/font_styles.dart';
 
 
-// class OpenedPhotoWithScroll extends StatelessWidget {
-//   final ThemeController themeController;
-//   const OpenedPhotoWithScroll({super.key, required this.themeController});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ThemeInherited(
-//       themeController: themeController, 
-//       child: ThemeBuilder(builder: (
-//         _, themeMode
-//       ){
-//         return MaterialApp(
-//             theme: AppThemeData.lightTheme,
-//             darkTheme: AppThemeData.darkTheme,
-//             themeMode: themeMode,
-//             home: const PhotoPage(index: ,), //! 
-            
-//         );
-//       }));
-//   }
-// }
-
-
-final controller = PageController(
-  viewportFraction: 0.7,
-  initialPage: 1,
-);
 
 
 class PhotoPage extends StatefulWidget {
@@ -43,20 +16,32 @@ class PhotoPage extends StatefulWidget {
 
   @override
   State<PhotoPage> createState() => _PageState();
+  
 }
 
 class _PageState extends State<PhotoPage> {
+
+
+
+late PageController controller;
   int currentIndex = 0;
   // int _currentIndex = 1;
 
   @override
   void initState() {
+      controller = PageController(
+      viewportFraction: 0.8,
+      initialPage: widget.index,
+    );
+    currentIndex = widget.index;
     super.initState();
+
     controller.addListener(() {
+
+      
       int newIndex = controller.page?.round() ?? 0;
       if (newIndex != currentIndex) {
         setState(() {
-          currentIndex = widget.index;
           currentIndex = newIndex;
         });
       }
@@ -74,9 +59,9 @@ class _PageState extends State<PhotoPage> {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  const Spacer(flex: 1),
                   Center(child: Text('01.01.2021', style: MyCustomStyle.mainTextThin,)),
-                  ElevatedButton(
-                      onPressed: () {ThemeInherited.of(context).switchThemeMode();}, child: const Text('Тема')),
+                  const Spacer(flex: 1),
                   RichText(
                     text: TextSpan(
                       children: [
@@ -101,6 +86,7 @@ class _PageState extends State<PhotoPage> {
           itemBuilder: (context, index) {
 
             var _scale = currentIndex == index ? 1.0 : 0.87;
+            double _height = currentIndex == index ? 600 : 390;
 
             return TweenAnimationBuilder(
               duration: const Duration(microseconds: 350),
@@ -115,8 +101,8 @@ class _PageState extends State<PhotoPage> {
               child: Center(
                 child: Container(
                   // margin: const EdgeInsets.symmetric(horizontal: 5),
-                  height: 600,
-                  // width: 400,
+                  height: _height,
+                  width: 557,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     image:
@@ -127,5 +113,10 @@ class _PageState extends State<PhotoPage> {
             );
           },
         ));
+  }
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }

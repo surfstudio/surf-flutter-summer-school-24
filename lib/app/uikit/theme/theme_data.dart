@@ -10,7 +10,8 @@ abstract class AppThemeData {
     brightness: Brightness.light,
     colorScheme: ColorScheme(
       brightness: Brightness.light,
-      primary: _lightColorScheme.primary,
+      // primary: _lightColorScheme.primary,
+      primary: Colors.black,
       onPrimary: _lightColorScheme.onPrimary,
       secondary: _lightColorScheme.secondary,
       onSecondary: _lightColorScheme.onSecondary,
@@ -32,7 +33,7 @@ abstract class AppThemeData {
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: _lightColorScheme.background,
-      selectedItemColor: _lightColorScheme.primary,
+      selectedItemColor: _lightColorScheme.textFieldLabel,
       unselectedItemColor: _lightColorScheme.onBackground,
     ),
     snackBarTheme: SnackBarThemeData(
@@ -51,7 +52,8 @@ abstract class AppThemeData {
     brightness: Brightness.dark,
     colorScheme: ColorScheme(
       brightness: Brightness.dark,
-      primary: _darkColorScheme.primary,
+      // primary: _darkColorScheme.primary,
+      primary: Colors.white,
       onPrimary: _darkColorScheme.onPrimary,
       secondary: _darkColorScheme.secondary,
       onSecondary: _darkColorScheme.onSecondary,
