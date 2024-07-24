@@ -1,5 +1,5 @@
-import 'package:surf_flutter_summer_school_24/data/entity/image_entity.dart';
-import 'package:surf_flutter_summer_school_24/interfaces/image_repository_interface.dart';
+import 'package:surf_flutter_summer_school_24/domain/repository/image_repository_interface.dart';
+import 'package:surf_flutter_summer_school_24/entity/image_entity.dart';
 
 class MockImageRepository implements IImageRepository {
   @override
