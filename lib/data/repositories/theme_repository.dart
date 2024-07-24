@@ -1,4 +1,4 @@
-import 'package:surf_flutter_summer_school_24/storage/theme/theme_storage.dart';
+import 'package:surf_flutter_summer_school_24/data/storage/theme_storage.dart';
 import 'package:flutter/material.dart';
 
 class ThemeRepository {

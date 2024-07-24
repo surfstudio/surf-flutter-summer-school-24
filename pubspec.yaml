@@ -8,9 +8,10 @@ environment:
 
 dependencies:
   collection: ^1.18.0
+  shared_preferences: ^2.2.3
   flutter:
     sdk: flutter
-  shared_preferences: ^2.2.3
+
 
 dev_dependencies:
   flutter_test:

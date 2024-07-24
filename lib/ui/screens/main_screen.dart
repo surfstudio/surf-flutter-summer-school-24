@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:surf_flutter_summer_school_24/di/theme_inherited.dart';
+import 'image_carousel_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -88,11 +89,31 @@ class _MainScreenState extends State<MainScreen> {
         future: _loadImages(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return ImageGrid(isBlurred: true, isDarkMode: ThemeInherited.of(context).themeMode.value == ThemeMode.dark);
+            return ImageGrid(
+              isBlurred: true,
+              isDarkMode: ThemeInherited.of(context).themeMode.value == ThemeMode.dark,
+              onImageTap: (index) {
+                // Do nothing when blurred
+              },
+            );
           } else if (snapshot.hasError || !snapshot.hasData || !snapshot.data!) {
             return const ErrorView();
           } else {
-            return ImageGrid(isBlurred: false, isDarkMode: ThemeInherited.of(context).themeMode.value == ThemeMode.dark);
+            return ImageGrid(
+              isBlurred: false,
+              isDarkMode: ThemeInherited.of(context).themeMode.value == ThemeMode.dark,
+              onImageTap: (index) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ImageCarouselScreen(
+                      initialIndex: index,
+                      imagePaths: List.generate(30, (index) => 'assets/image1.jpg'),
+                    ),
+                  ),
+                );
+              },
+            );
           }
         },
       ),
@@ -135,11 +156,11 @@ class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 class ImageGrid extends StatelessWidget {
   final bool isBlurred;
-  final List<String> _loadedImages =
-  List.generate(30, (index) => 'assets/image1.jpg');
-  final isDarkMode;
+  final bool isDarkMode;
+  final List<String> _loadedImages = List.generate(30, (index) => 'assets/image1.jpg');
+  final Function(int) onImageTap;
 
-  ImageGrid({super.key, required this.isBlurred, required this.isDarkMode});
+  ImageGrid({super.key, required this.isBlurred, required this.isDarkMode, required this.onImageTap});
 
   @override
   Widget build(BuildContext context) {
@@ -151,11 +172,12 @@ class ImageGrid extends StatelessWidget {
       ),
       itemCount: isBlurred ? 40 : _loadedImages.length,
       itemBuilder: (context, index) {
-        return Image.asset(
-          isBlurred
-              ? 'assets/blurred.png'
-              : _loadedImages[index % _loadedImages.length],
-          fit: BoxFit.fill,
+        return GestureDetector(
+          onTap: () => onImageTap(index),
+          child: Image.asset(
+            isBlurred ? 'assets/blurred.png' : _loadedImages[index % _loadedImages.length],
+            fit: BoxFit.fill,
+          ),
         );
       },
     );
@@ -197,7 +219,7 @@ class ErrorView extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
-              // Реализуйте логику для попытки снова, если необходимо
+
             },
             child: const Text('Попробовать снова'),
           ),

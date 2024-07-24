@@ -1,4 +1,4 @@
-import 'package:surf_flutter_summer_school_24/data/theme_repository.dart';
+import 'package:surf_flutter_summer_school_24/data/repositories/theme_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
