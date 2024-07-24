@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:surf_flutter_summer_school_24/feature/theme/di/theme_inherited.dart';
+import 'package:surf_flutter_summer_school_24/di/theme_inherited.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -88,11 +88,11 @@ class _MainScreenState extends State<MainScreen> {
         future: _loadImages(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return ImageGrid(isBlurred: true);
+            return ImageGrid(isBlurred: true, isDarkMode: ThemeInherited.of(context).themeMode.value == ThemeMode.dark);
           } else if (snapshot.hasError || !snapshot.hasData || !snapshot.data!) {
             return const ErrorView();
           } else {
-            return ImageGrid(isBlurred: false);
+            return ImageGrid(isBlurred: false, isDarkMode: ThemeInherited.of(context).themeMode.value == ThemeMode.dark);
           }
         },
       ),
@@ -137,8 +137,9 @@ class ImageGrid extends StatelessWidget {
   final bool isBlurred;
   final List<String> _loadedImages =
   List.generate(30, (index) => 'assets/image1.jpg');
+  final isDarkMode;
 
-  ImageGrid({super.key, required this.isBlurred});
+  ImageGrid({super.key, required this.isBlurred, required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {

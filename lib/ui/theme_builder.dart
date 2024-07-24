@@ -1,4 +1,4 @@
-import 'package:surf_flutter_summer_school_24/feature/theme/di/theme_inherited.dart';
+import 'package:surf_flutter_summer_school_24/di/theme_inherited.dart';
 import 'package:flutter/material.dart';
 
 typedef ThemeWidgetBuilder = Widget Function(
