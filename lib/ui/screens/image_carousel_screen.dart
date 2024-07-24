@@ -4,7 +4,7 @@ import 'package:surf_flutter_summer_school_24/di/dependency_injector.dart';
 import '../../domain/models/theme_controller.dart';
 
 class ImageCarouselScreen extends StatefulWidget {
-  final List<String> imageUrls;  // Изменено на imageUrls
+  final List<String> imageUrls;
   final int initialIndex;
 
   const ImageCarouselScreen({
@@ -164,7 +164,7 @@ class ImageCarousel extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 Image.network(
-                  imageUrls[index],  // Заменено на Image.network
+                  imageUrls[index],
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Center(child: Icon(Icons.error, color: Colors.red));
