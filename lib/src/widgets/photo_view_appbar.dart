@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:surf_flutter_summer_school_24/src/pages/gallery.dart';
 
 class PhotoViewAppbar extends StatelessWidget implements PreferredSizeWidget {
   final int total;
@@ -10,11 +11,21 @@ class PhotoViewAppbar extends StatelessWidget implements PreferredSizeWidget {
     String ct = current.toString() + "/" + total.toString();
     return AppBar(
       leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Gallery(),
+              ), (Route<dynamic> route) => false,
+            );
+          },
           icon: const Icon(Icons.arrow_back_rounded)
       ),
       actions: [
-        Text(ct)
+        Padding(
+            padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+            child: Text(ct),
+        )
       ],
     );
   }
