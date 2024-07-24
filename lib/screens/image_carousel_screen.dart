@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:ui';
 
 void main() {
@@ -24,7 +23,32 @@ class _ImageCarouselScreenState extends State<ImageCarouselScreen> {
   final int _allImages = 5;
   int _currentImage = 0;
 
-  final CarouselController _carouselController = CarouselController();
+  late final PageController _pageController = PageController(
+    initialPage: _allImages * 1000, // стартуем с "середины", чтобы симулировать бесконечность
+    viewportFraction: 0.3, // Уменьшаем viewportFraction для большей видимости соседних элементов
+  );
+
+  @override
+  void initState() {
+    _pageController.addListener(_onPageChanged);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController
+      ..removeListener(_onPageChanged)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onPageChanged() {
+    final prevPage = _currentImage;
+    _currentImage = (_pageController.page?.round() ?? _currentImage) % _allImages;
+    if (prevPage != _currentImage) {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +62,8 @@ class _ImageCarouselScreenState extends State<ImageCarouselScreen> {
         child: Center(
           child: ImageCarousel(
             imagePaths: _imagePaths,
-            carouselController: _carouselController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentImage = index;
-              });
-            },
+            pageController: _pageController,
+            currentPage: _currentImage,
           ),
         ),
       ),
@@ -99,56 +119,48 @@ class CarouselHeader extends StatelessWidget implements PreferredSizeWidget {
 
 class ImageCarousel extends StatelessWidget {
   final List<String> imagePaths;
-  final CarouselController carouselController;
-  final ValueChanged<int> onPageChanged;
+  final PageController pageController;
+  final int currentPage;
 
   const ImageCarousel({
     super.key,
     required this.imagePaths,
-    required this.carouselController,
-    required this.onPageChanged,
+    required this.pageController,
+    required this.currentPage,
   });
 
   @override
   Widget build(BuildContext context) {
-    return CarouselSlider.builder(
-      carouselController: carouselController,
-      itemCount: imagePaths.length,
-      itemBuilder: (context, index, realIndex) {
-        bool isCenter = index == context.findAncestorStateOfType<_ImageCarouselScreenState>()!._currentImage;
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(35.0),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.asset(
-                imagePaths[index],
-                fit: BoxFit.cover,
-                width: double.infinity,
-              ),
-              if (!isCenter)
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                  child: Container(
-                    color: Colors.black.withOpacity(0),
-                  ),
+    return PageView.builder(
+      controller: pageController,
+      itemCount: imagePaths.length * 2000,
+      itemBuilder: (context, index) {
+        final realIndex = index % imagePaths.length;
+        final scale = currentPage == realIndex ? 1.0 : 0.9;
+        return Transform.scale(
+          scale: scale,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(35.0),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.asset(
+                  imagePaths[realIndex],
+                  fit: BoxFit.cover,
+                  width: double.infinity,
                 ),
-            ],
+                if (currentPage != realIndex)
+                  BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                    child: Container(
+                      color: Colors.black.withOpacity(0),
+                    ),
+                  ),
+              ],
+            ),
           ),
         );
       },
-      options: CarouselOptions(
-        height: double.infinity,
-        enlargeCenterPage: true,
-        initialPage: 0,
-        enableInfiniteScroll: true,
-        viewportFraction: 0.832,
-        enlargeStrategy: CenterPageEnlargeStrategy.scale,
-        enlargeFactor: 0.3,
-        onPageChanged: (index, reason) {
-          onPageChanged(index);
-        },
-      ),
     );
   }
 }
