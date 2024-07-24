@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:surf_flutter_summer_school_24/di/dependency_injector.dart';
+import 'package:surf_flutter_summer_school_24/domain/models/advanced_image.dart';
+import 'package:surf_flutter_summer_school_24/domain/interactors/advanced_image_interactor.dart';
 import 'image_carousel_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -11,6 +13,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final ValueNotifier<bool> _imagesLoaded = ValueNotifier<bool>(false);
+  List<AdvancedImage> _images = [];
 
   @override
   void initState() {
@@ -19,8 +22,14 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _loadImages() async {
-    await Future.delayed(const Duration(seconds: 2));
-    _imagesLoaded.value = true;
+    final interactor = DependencyInjector().advancedImageInteractor;
+    try {
+      _images = await interactor.getAdvancedImages();
+      _imagesLoaded.value = true;
+    } catch (error) {
+      // Handle error if needed
+      _imagesLoaded.value = true; // Or handle error state
+    }
   }
 
   void _showBottomSheet() {
@@ -103,6 +112,7 @@ class _MainScreenState extends State<MainScreen> {
           return ImageGrid(
             isBlurred: !isLoaded,
             isDarkMode: themeController.themeMode.value == ThemeMode.dark,
+            images: _images,
             onImageTap: (index) {
               if (isLoaded) {
                 Navigator.push(
@@ -110,7 +120,7 @@ class _MainScreenState extends State<MainScreen> {
                   MaterialPageRoute(
                     builder: (context) => ImageCarouselScreen(
                       initialIndex: index,
-                      imagePaths: List.generate(30, (index) => 'assets/image1.jpg'),
+                      imageUrls: _images.map((img) => img.url).toList(),  // Исправлено на imageUrls
                     ),
                   ),
                 );
@@ -159,13 +169,14 @@ class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
 class ImageGrid extends StatelessWidget {
   final bool isBlurred;
   final bool isDarkMode;
-  final List<String> _loadedImages = List.generate(30, (index) => 'assets/image1.jpg');
+  final List<AdvancedImage> images;
   final Function(int) onImageTap;
 
   ImageGrid({
     super.key,
     required this.isBlurred,
     required this.isDarkMode,
+    required this.images,
     required this.onImageTap,
   });
 
@@ -177,13 +188,16 @@ class ImageGrid extends StatelessWidget {
         crossAxisSpacing: 3,
         mainAxisSpacing: 5,
       ),
-      itemCount: isBlurred ? 40 : _loadedImages.length,
+      itemCount: isBlurred ? 40 : images.length,
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () => onImageTap(index),
-          child: Image.asset(
-            isBlurred ? 'assets/blurred.png' : _loadedImages[index % _loadedImages.length],
+          child: Image.network(
+            isBlurred ? 'assets/blurred.png' : images[index % images.length].url,
             fit: BoxFit.fill,
+            errorBuilder: (context, error, stackTrace) {
+              return Center(child: Icon(Icons.error, color: Colors.red));
+            },
           ),
         );
       },
@@ -226,7 +240,7 @@ class ErrorView extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
-
+              // Handle retry logic here
             },
             child: const Text('Попробовать снова'),
           ),

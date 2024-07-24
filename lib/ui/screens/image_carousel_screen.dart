@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:surf_flutter_summer_school_24/di/dependency_injector.dart';
-
 import '../../domain/models/theme_controller.dart';
 
 class ImageCarouselScreen extends StatefulWidget {
-  final List<String> imagePaths;
+  final List<String> imageUrls;  // Изменено на imageUrls
   final int initialIndex;
 
   const ImageCarouselScreen({
     super.key,
-    required this.imagePaths,
+    required this.imageUrls,
     required this.initialIndex,
   });
 
@@ -53,7 +52,7 @@ class _ImageCarouselScreenState extends State<ImageCarouselScreen> {
     return Scaffold(
       appBar: CarouselHeader(
         currentImageNotifier: _currentImageNotifier,
-        allImages: widget.imagePaths.length,
+        allImages: widget.imageUrls.length,
         themeController: themeController,
       ),
       body: Padding(
@@ -63,7 +62,7 @@ class _ImageCarouselScreenState extends State<ImageCarouselScreen> {
             valueListenable: _currentImageNotifier,
             builder: (context, currentPage, child) {
               return ImageCarousel(
-                imagePaths: widget.imagePaths,
+                imageUrls: widget.imageUrls,
                 pageController: _pageController,
                 currentPage: currentPage,
               );
@@ -139,13 +138,13 @@ class CarouselHeader extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class ImageCarousel extends StatelessWidget {
-  final List<String> imagePaths;
+  final List<String> imageUrls;  // Изменено на imageUrls
   final PageController pageController;
   final int currentPage;
 
   const ImageCarousel({
     super.key,
-    required this.imagePaths,
+    required this.imageUrls,
     required this.pageController,
     required this.currentPage,
   });
@@ -154,7 +153,7 @@ class ImageCarousel extends StatelessWidget {
   Widget build(BuildContext context) {
     return PageView.builder(
       controller: pageController,
-      itemCount: imagePaths.length,
+      itemCount: imageUrls.length,
       itemBuilder: (context, index) {
         final scale = currentPage == index ? 1.0 : 0.9;
         return Transform.scale(
@@ -164,7 +163,13 @@ class ImageCarousel extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Image.asset(imagePaths[index], fit: BoxFit.cover),
+                Image.network(
+                  imageUrls[index],  // Заменено на Image.network
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Center(child: Icon(Icons.error, color: Colors.red));
+                  },
+                ),
                 if (currentPage != index)
                   BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
