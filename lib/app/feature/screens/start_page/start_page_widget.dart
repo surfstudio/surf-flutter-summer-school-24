@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:surf_flutter_summer_school_24/app/feature/theme/di/theme_inherited.dart';
-import 'package:surf_flutter_summer_school_24/app/screens/opened_image/opened_image_with_scroll.dart';
+import 'package:surf_flutter_summer_school_24/app/feature/screens/opened_image/photo_page_widget.dart';
 import 'package:surf_flutter_summer_school_24/app/storage/images/images.dart';
 import 'package:surf_flutter_summer_school_24/app/uikit/styles/font_styles.dart';
 
-class StartPageWidget extends StatefulWidget {
+class StartPageWidget extends StatelessWidget {
   const StartPageWidget({super.key});
-
-  @override
-  State<StartPageWidget> createState() => _StartPageState();
-}
-
-class _StartPageState extends State<StartPageWidget> {
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +57,6 @@ class _StartPageState extends State<StartPageWidget> {
   }
 }
 
-
 class InversionOfBlackPng extends StatelessWidget {
   final Widget child;
   const InversionOfBlackPng({super.key, required this.child});
@@ -87,6 +80,7 @@ class InversionOfBlackPng extends StatelessWidget {
 
 
 class BottomSheetContent extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     final whatKindOfTheme = Theme.of(context).brightness == Brightness.light;
@@ -141,3 +135,5 @@ class BottomSheetContent extends StatelessWidget {
     );
   }
 }
+
+

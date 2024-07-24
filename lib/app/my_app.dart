@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:surf_flutter_summer_school_24/app/feature/screens/start_page/start_page_model.dart';
 import 'package:surf_flutter_summer_school_24/app/feature/theme/di/theme_inherited.dart';
 import 'package:surf_flutter_summer_school_24/app/feature/theme/domain/theme_controller.dart';
 import 'package:surf_flutter_summer_school_24/app/feature/theme/ui/theme_builder.dart';
-import 'package:surf_flutter_summer_school_24/app/screens/start_page/start_page_widget.dart';
+import 'package:surf_flutter_summer_school_24/app/feature/screens/start_page/start_page_widget.dart';
 import 'package:surf_flutter_summer_school_24/app/uikit/theme/theme_data.dart';
 
 class MainApp extends StatelessWidget {
@@ -19,10 +20,10 @@ class MainApp extends StatelessWidget {
             darkTheme: AppThemeData.darkTheme,
             themeMode: themeMode,
 
-            home: StartPageWidget()
+            home: const StartPageWidget()
 
-            // home: StartPageWidgetProvider(
-            //   model: StartPageWidgetModel(),
+            // home: StartPageModelProvider(
+            //   model: StartPageModel(),
             //   child: const StartPageWidget()
             //   ),
 
