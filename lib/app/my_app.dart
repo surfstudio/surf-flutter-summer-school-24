@@ -21,11 +21,11 @@ class MainApp extends StatelessWidget {
             darkTheme: AppThemeData.darkTheme,
             themeMode: themeMode,
             home: const StartPage(),
-            initialRoute: '/start_page',
-            routes: {
-              '/start_page': (context) => const StartPage(),
-              '/opened_image': (context) => OpenedPhotoWithScroll(themeController: themeController),
-            },
+            // initialRoute: '/start_page',
+            // routes: {
+            //   '/start_page': (context) => const StartPage(),
+            //   '/opened_image': (context) => PhotoPage(index: ),
+            // },
           );
         }));
   }

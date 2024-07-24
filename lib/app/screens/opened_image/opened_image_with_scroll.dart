@@ -7,27 +7,27 @@ import 'package:surf_flutter_summer_school_24/app/uikit/theme/theme_data.dart';
 import 'package:surf_flutter_summer_school_24/app/uikit/styles/font_styles.dart';
 
 
-class OpenedPhotoWithScroll extends StatelessWidget {
-  final ThemeController themeController;
-  const OpenedPhotoWithScroll({super.key, required this.themeController});
+// class OpenedPhotoWithScroll extends StatelessWidget {
+//   final ThemeController themeController;
+//   const OpenedPhotoWithScroll({super.key, required this.themeController});
 
-  @override
-  Widget build(BuildContext context) {
-    return ThemeInherited(
-      themeController: themeController, 
-      child: ThemeBuilder(builder: (
-        _, themeMode
-      ){
-        return MaterialApp(
-            theme: AppThemeData.lightTheme,
-            darkTheme: AppThemeData.darkTheme,
-            themeMode: themeMode,
-            home: const Page(),
+//   @override
+//   Widget build(BuildContext context) {
+//     return ThemeInherited(
+//       themeController: themeController, 
+//       child: ThemeBuilder(builder: (
+//         _, themeMode
+//       ){
+//         return MaterialApp(
+//             theme: AppThemeData.lightTheme,
+//             darkTheme: AppThemeData.darkTheme,
+//             themeMode: themeMode,
+//             home: const PhotoPage(index: ,), //! 
             
-        );
-      }));
-  }
-}
+//         );
+//       }));
+//   }
+// }
 
 
 final controller = PageController(
@@ -36,24 +36,28 @@ final controller = PageController(
 );
 
 
-class Page extends StatefulWidget {
-  const Page({super.key});
+class PhotoPage extends StatefulWidget {
+  // final int currentIndex;
+  final int index;
+  const PhotoPage({super.key, required this.index});
 
   @override
-  State<Page> createState() => _PageState();
+  State<PhotoPage> createState() => _PageState();
 }
 
-class _PageState extends State<Page> {
-  int _currentIndex = 1;
+class _PageState extends State<PhotoPage> {
+  int currentIndex = 0;
+  // int _currentIndex = 1;
 
   @override
   void initState() {
     super.initState();
     controller.addListener(() {
       int newIndex = controller.page?.round() ?? 0;
-      if (newIndex != _currentIndex) {
+      if (newIndex != currentIndex) {
         setState(() {
-          _currentIndex = newIndex;
+          currentIndex = widget.index;
+          currentIndex = newIndex;
         });
       }
     });
@@ -77,7 +81,7 @@ class _PageState extends State<Page> {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: '${_currentIndex + 1}',
+                          text: '${currentIndex + 1}',
                           style: MyCustomStyle.mainTextBold.copyWith(fontSize: 18, color: dynamicAppBarColorForTextSpan),
                         ),
                         TextSpan(
@@ -96,7 +100,7 @@ class _PageState extends State<Page> {
           itemCount: images.length,
           itemBuilder: (context, index) {
 
-            var _scale = _currentIndex == index ? 1.0 : 0.87;
+            var _scale = currentIndex == index ? 1.0 : 0.87;
 
             return TweenAnimationBuilder(
               duration: const Duration(microseconds: 350),
