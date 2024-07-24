@@ -61,11 +61,12 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
 
   final Color shimmer;
 
+
   AppColorScheme.light()
       : primary = LightColorPalette.black,
         onPrimary = LightColorPalette.white,
-        secondary = LightColorPalette.greenYellow,
-        onSecondary = LightColorPalette.chineseBlack,
+        secondary = LightColorPalette.darkSilver,
+        onSecondary = LightColorPalette.platinum,
         surface = LightColorPalette.white,
         surfaceSecondary = LightColorPalette.cultured,
         onSurface = LightColorPalette.chineseBlack,
@@ -89,12 +90,12 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
         skeletonSecondary = LightColorPalette.cultured,
         skeletonTertiary = LightColorPalette.lightSilver,
         tetradicBackground = LightColorPalette.lightGreen,
-        shimmer = LightColorPalette.platinum;
+        shimmer = LightColorPalette.silver;
 
   AppColorScheme.dark()
       : primary = DarkColorPalette.white,
         onPrimary = DarkColorPalette.black,
-        secondary = DarkColorPalette.inchworm,
+        secondary = DarkColorPalette.darkSilver,
         onSecondary = DarkColorPalette.black,
         surface = DarkColorPalette.raisinBlack,
         surfaceSecondary = DarkColorPalette.raisinBlack,
@@ -119,7 +120,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
         skeletonSecondary = DarkColorPalette.raisinBlack,
         skeletonTertiary = DarkColorPalette.lightSilver,
         tetradicBackground = DarkColorPalette.etonBlue,
-        shimmer = LightColorPalette.platinum;
+        shimmer =DarkColorPalette.raisinBlack;
 
   const AppColorScheme._({
     required this.primary,

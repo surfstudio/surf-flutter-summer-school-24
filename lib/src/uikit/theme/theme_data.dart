@@ -21,6 +21,8 @@ abstract class AppThemeData {
       onBackground: _lightColorScheme.onBackground,
       surface: _lightColorScheme.surface,
       onSurface: _lightColorScheme.onSurface,
+      errorContainer: _lightColorScheme.shimmer,
+      onErrorContainer: _lightColorScheme.onSecondary
     ),
     scaffoldBackgroundColor: _lightColorScheme.background,
     appBarTheme: AppBarTheme(
@@ -60,6 +62,8 @@ abstract class AppThemeData {
       onBackground: _darkColorScheme.onBackground,
       surface: _darkColorScheme.surface,
       onSurface: _darkColorScheme.onSurface,
+      errorContainer: _darkColorScheme.shimmer,
+      onErrorContainer: _darkColorScheme.secondary
     ),
     scaffoldBackgroundColor: _darkColorScheme.background,
     appBarTheme: AppBarTheme(

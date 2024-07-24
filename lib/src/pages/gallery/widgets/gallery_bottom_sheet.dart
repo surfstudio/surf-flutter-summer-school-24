@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-
-import '../feature/theme/di/theme_inherited.dart';
+import '../../../feature/theme/di/theme_inherited.dart';
 
 class GalleryBottomSheet extends StatelessWidget {
   const GalleryBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 160,
       child: Center(
         child: Column(
@@ -37,7 +36,7 @@ class GalleryBottomSheet extends StatelessWidget {
                     child: Text(
                       ThemeInherited.of(context).themeMode.value == ThemeMode.light
                           ? 'Светлая'
-                          : 'Темная',
+                          : 'Темная', style: TextStyle(color: Theme.of(context).colorScheme.secondary)
                     ),
                   ),
                 ],

@@ -21,6 +21,8 @@ abstract class LightColorPalette {
 
   static const lightSilver = Color(0xFFD9D9D9);
 
+  static const silver = Color(0xFFB2B2B2);
+
   static const lightGreen = Color(0xFFB5CCAE);
 
   static const darkGreen = Color(0xFF84A58F);
@@ -32,6 +34,10 @@ abstract class LightColorPalette {
   static const appleGreen = Color(0xFF83C000);
 
   static const platinum = Color(0xFFE7E4E0);
+
+  static const raisinBlack = Color(0xFF232323);
+
+  static const darkSilver = Color(0xFF626262);
 }
 
 abstract class DarkColorPalette {
@@ -46,6 +52,8 @@ abstract class DarkColorPalette {
   static const raisinBlack = Color(0xFF222222);
 
   static const lightSilver = Color(0xFFD6D6D6);
+
+  static const darkSilver = Color(0xFF626262);
 
   static const cyclamen = Color(0xFFFF79A8);
 
