@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:surf_flutter_summer_school_24/app/feature/screens/opened_image/photo_page_model.dart';
-import 'package:surf_flutter_summer_school_24/app/feature/theme/di/theme_inherited.dart';
-import 'package:surf_flutter_summer_school_24/app/feature/theme/domain/theme_controller.dart';
-import 'package:surf_flutter_summer_school_24/app/feature/theme/ui/theme_builder.dart';
 import 'package:surf_flutter_summer_school_24/app/storage/images/images.dart';
-import 'package:surf_flutter_summer_school_24/app/uikit/theme/theme_data.dart';
 import 'package:surf_flutter_summer_school_24/app/uikit/styles/font_styles.dart';
 
 
-
 class PhotoPage extends StatefulWidget {
-  // final int currentIndex;
   final int index;
   const PhotoPage({super.key, required this.index});
 
@@ -21,10 +14,8 @@ class PhotoPage extends StatefulWidget {
 
 class _PageState extends State<PhotoPage> {
 
-// late PageController controller; //! забрал в model
-  // int currentIndex = 0; //! забрал в model
-
-
+late PageController controller; 
+  int currentIndex = 0; 
 
   @override
   void initState() {
@@ -46,29 +37,7 @@ class _PageState extends State<PhotoPage> {
   
   @override
   Widget build(BuildContext context) {
-    
-    return const ContentWidget();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-}
-
-
-
-class ContentWidget extends StatelessWidget {
-  // final int currentIndex;
-  // final PageController controller;
-  // final Color? dynamicAppBarColorForTextSpan;
-  const ContentWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final model = PhotoPageModelProvider.watch(context)?.model;
-    final dynamicAppBarColorForTextSpan = Theme.of(context).appBarTheme.foregroundColor;
+  final dynamicAppBarColorForTextSpan = Theme.of(context).appBarTheme.foregroundColor;
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(onPressed: () { Navigator.of(context).pop(); },
@@ -84,7 +53,7 @@ class ContentWidget extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: '${model?.currentIndex} + 1}', // ! не очень хорошая практика: в результате мы не прибегаем к механизму notifyListenets, а обращаемся напрямую к полю в модели
+                          text: '$currentIndex + 1}',
                           style: MyCustomStyle.mainTextBold.copyWith(fontSize: 18, color: dynamicAppBarColorForTextSpan),
                         ),
                         TextSpan(
@@ -99,12 +68,12 @@ class ContentWidget extends StatelessWidget {
         ),
         body: PageView.builder(
           pageSnapping: false,
-          controller: model?.controller,
+          controller: controller,
           itemCount: images.length,
           itemBuilder: (context, index) {
 
-            var _scale = model?.currentIndex == index ? 1.0 : 0.87;
-            double _height = model?.currentIndex == index ? 600 : 390;
+            var _scale = currentIndex == index ? 1.0 : 0.87;
+            double _height = currentIndex == index ? 600 : 390;
 
             return TweenAnimationBuilder(
               duration: const Duration(microseconds: 350),
@@ -124,7 +93,7 @@ class ContentWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     image:
-                        DecorationImage(image: images[index], fit: BoxFit.cover),
+                      DecorationImage(image: images[index], fit: BoxFit.cover),
                   ),
                 ),
               ),
@@ -132,4 +101,12 @@ class ContentWidget extends StatelessWidget {
           },
         ));
   }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 }
+
+

@@ -1,3 +1,5 @@
+// ! БЕСПОЛЕЗНЫЙ ФАЙЛ
+
 import 'package:flutter/material.dart';
 
 class PhotoPageModel extends ChangeNotifier {
