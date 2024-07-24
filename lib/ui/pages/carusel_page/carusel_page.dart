@@ -1,21 +1,17 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:surf_flutter_summer_school_24/ui/ui_kit/typography/typograhy.dart';
 
 class CaruselPage extends StatefulWidget {
-  const CaruselPage({super.key});
+  final List<String> images;
+  const CaruselPage({super.key, required this.images});
 
   @override
   _CaruselPageState createState() => _CaruselPageState();
 }
 
 class _CaruselPageState extends State<CaruselPage> {
-  final List<String> _images = [
-    'https://img.freepik.com/free-photo/delicious-street-food-fest_23-2151543468.jpg?w=1380&t=st=1721638800~exp=1721639400~hmac=8ea5b2dd04c52a23b9147c2c9350da432088ba54c5e7e436038f293ba1fe1c42',
-    'https://img.freepik.com/free-photo/view-of-wild-elk-in-nature_23-2151017808.jpg?w=996&t=st=1721638817~exp=1721639417~hmac=ec22522cf4a97fbe20c938da310fd29702f466fc53bab45254bab05f00770b51',
-    'https://img.freepik.com/free-photo/tiger-looking-with-the-open-mouth_1150-18083.jpg?w=1060&t=st=1721638831~exp=1721639431~hmac=11ea6b3ae7e9ce032f5b826419ba9567ac1902b4cedf2dfe4325f366a5706fb1',
-  ];
-
   int _currentIndex = 0;
 
   @override
@@ -23,9 +19,11 @@ class _CaruselPageState extends State<CaruselPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(
+            Icons.arrow_back,
+          ),
           onPressed: () {
-            // Navigator.pop(context);
+            Navigator.pop(context);
           },
         ),
         centerTitle: true,
@@ -34,12 +32,13 @@ class _CaruselPageState extends State<CaruselPage> {
             children: [
               Text(
                 '${_currentIndex + 1}',
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700),
+                style: AppTypography.bold18,
               ),
-              Text('/${_images.length}'),
+              Text(
+                '/${widget.images.length}',
+                style: AppTypography.bold18
+                    .copyWith(color: const Color(0xFFBFBFBF)),
+              ),
               const SizedBox(
                 width: 10,
               )
@@ -48,7 +47,7 @@ class _CaruselPageState extends State<CaruselPage> {
         ],
       ),
       body: PageView.builder(
-        itemCount: _images.length,
+        itemCount: widget.images.length,
         onPageChanged: (index) {
           setState(() {
             _currentIndex = index;
@@ -62,7 +61,7 @@ class _CaruselPageState extends State<CaruselPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
                 image: DecorationImage(
-                  image: NetworkImage(_images[index]),
+                  image: NetworkImage(widget.images[index]),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -78,7 +77,7 @@ class _CaruselPageState extends State<CaruselPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
                 image: DecorationImage(
-                  image: NetworkImage(_images[index]),
+                  image: NetworkImage(widget.images[index]),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -91,7 +90,7 @@ class _CaruselPageState extends State<CaruselPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
                 image: DecorationImage(
-                  image: NetworkImage(_images[index]),
+                  image: NetworkImage(widget.images[index]),
                   fit: BoxFit.cover,
                 ),
               ),
