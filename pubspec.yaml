@@ -33,3 +33,8 @@ flutter:
     - assets/blurred.png
     - assets/theme.png
     - assets/upload.png
+    - assets/smile.png
+    - assets/options_light.png
+    - assets/theme_light.png
+    - assets/upload_light.png
+

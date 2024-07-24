@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 
 void main() {
-  runApp(const MaterialApp(home: ImageCarouselScreen()));
+  runApp(
+    MaterialApp(
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
+      home: const ImageCarouselScreen(),
+    ),
+  );
 }
 
 class ImageCarouselScreen extends StatefulWidget {
@@ -23,15 +30,13 @@ class _ImageCarouselScreenState extends State<ImageCarouselScreen> {
   final int _allImages = 5;
   int _currentImage = 0;
 
-  late final PageController _pageController = PageController(
-    initialPage: _allImages * 1000, // стартуем с "середины", чтобы симулировать бесконечность
-    viewportFraction: 0.3, // Уменьшаем viewportFraction для большей видимости соседних элементов
-  );
+  late final PageController _pageController =
+      PageController(initialPage: _allImages * 1000, viewportFraction: 0.8);
 
   @override
   void initState() {
-    _pageController.addListener(_onPageChanged);
     super.initState();
+    _pageController.addListener(_onPageChanged);
   }
 
   @override
@@ -44,7 +49,8 @@ class _ImageCarouselScreenState extends State<ImageCarouselScreen> {
 
   void _onPageChanged() {
     final prevPage = _currentImage;
-    _currentImage = (_pageController.page?.round() ?? _currentImage) % _allImages;
+    _currentImage =
+        (_pageController.page?.round() ?? _currentImage) % _allImages;
     if (prevPage != _currentImage) {
       setState(() {});
     }
@@ -83,16 +89,22 @@ class CarouselHeader extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return AppBar(
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
+        icon: Icon(
+          Icons.arrow_back,
+          color: isDarkMode ? Colors.white : Colors.black,
+        ),
         onPressed: () {},
       ),
-      title: const Text(
+      title: Text(
         "21.05.2023",
         style: TextStyle(
           fontSize: 18,
           fontFamily: 'Roboto',
+          color: isDarkMode ? Colors.white : Colors.black,
         ),
       ),
       centerTitle: true,
@@ -102,14 +114,16 @@ class CarouselHeader extends StatelessWidget implements PreferredSizeWidget {
           child: Center(
             child: Text(
               "${currentImage + 1}/$allImages",
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontFamily: 'Roboto',
+                color: isDarkMode ? Colors.white : Colors.black,
               ),
             ),
           ),
         )
       ],
+      backgroundColor: isDarkMode ? Colors.black : Colors.white,
     );
   }
 
@@ -147,7 +161,6 @@ class ImageCarousel extends StatelessWidget {
                 Image.asset(
                   imagePaths[realIndex],
                   fit: BoxFit.cover,
-                  width: double.infinity,
                 ),
                 if (currentPage != realIndex)
                   BackdropFilter(
