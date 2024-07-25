@@ -9,6 +9,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  shared_preferences: ^2.2.3
+  shimmer: ^3.0.0
+  equatable: ^2.0.5
+  elementary: ^3.0.0
+  http: ^1.2.2
+  dio: ^5.5.0+1
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -17,3 +24,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+
+  fonts:
+    - family: Magnolia
+      fonts:
+        - asset: fonts/Magnolia.ttf
+
+
