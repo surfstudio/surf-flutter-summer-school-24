@@ -4,6 +4,7 @@ import 'package:surf_flutter_summer_school_24/router/router.dart';
 class TapeRoutes {
   static final routes = AutoRoute(page: TapeWrapperRoute.page, children: [
     AutoRoute(page: TapeRoute.page, initial: true),
-    AutoRoute(page: ImageViewRoute.page)
+    AutoRoute(page: ImageViewRoute.page),
+    AutoRoute(page: CameraViewRoute.page)
   ]);
 }
