@@ -13,6 +13,9 @@ dependencies:
   shimmer: ^3.0.0
   equatable: ^2.0.5
   elementary: ^3.0.0
+  http: ^1.2.2
+  dio: ^5.5.0+1
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

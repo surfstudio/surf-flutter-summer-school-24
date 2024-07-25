@@ -1,11 +1,9 @@
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
 
-import '../../feature/photos/data/mock_photo_repository.dart';
-import '../../models/photo_entity.dart';
+import '../../feature/photos/domain/models/photo_entity.dart';
 import 'widgets/gallery_appbar.dart';
 import 'widgets/photo_gallery_container.dart';
-import 'gallery_model.dart';
 import 'gallery_widget_model.dart';
 
 class GalleryWidget extends ElementaryWidget<GalleryWidgetModel> {
@@ -15,15 +13,11 @@ class GalleryWidget extends ElementaryWidget<GalleryWidgetModel> {
   })
       : super(wm, key: key);
 
-  static GalleryWidgetModel createGalleryWidgetModel(BuildContext context) =>
-      GalleryWidgetModel(GalleryModel(MockPhotoRepository()));
-
   @override
   Widget build(GalleryWidgetModel wm) {
     return Scaffold(
       appBar: const GalleryAppbar(),
-      body: ValueListenableBuilder<
-          List<PhotoEntity>>( // Используем ValueListenableBuilder
+      body: ValueListenableBuilder<List<PhotoEntity>>(
         valueListenable: wm.model.images,
         builder: (context, images, child) {
           return GridView.builder(

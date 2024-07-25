@@ -1,8 +1,8 @@
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
 
-import '../../feature/photos/data/mock_photo_repository.dart';
-import '../photo_view/photo_view.dart';
+import '../../feature/photos/data/photo_repository.dart';
+import '../photo_view/photo_view_widget.dart';
 import 'gallery_model.dart';
 import 'gallery_widget.dart';
 
@@ -18,11 +18,14 @@ class GalleryWidgetModel extends WidgetModel<GalleryWidget, GalleryModel> {
   void onPhotoTap(int index) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => PhotoView(
-          images: model.images.value, // Получаем значение из ValueNotifier
+        builder: (context) => PhotoViewWidget(
+          images: model.images.value,
           initialIndex: index,
         ),
       ),
     );
   }
 }
+
+GalleryWidgetModel createGalleryWidgetModel(BuildContext _) =>
+GalleryWidgetModel(GalleryModel(PhotoRepository()));

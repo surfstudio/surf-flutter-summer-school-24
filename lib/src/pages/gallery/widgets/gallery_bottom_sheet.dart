@@ -1,5 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../../feature/photos/data/photo_repository.dart';
+import '../../../feature/photos/data/upload_image_to_cload.dart';
 import '../../../feature/theme/di/theme_inherited.dart';
+
+import 'package:http/http.dart' as http;
 
 class GalleryBottomSheet extends StatelessWidget {
   const GalleryBottomSheet({super.key});
@@ -56,11 +65,59 @@ class GalleryBottomSheet extends StatelessWidget {
                   ],
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextButton(
+                            onPressed: () async {
+                              _pickImage(ImageSource.gallery, context);
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.photo_library_rounded),
+                                SizedBox(width: 10),
+                                Text('Галерея'),
+                              ],
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              _pickImage(ImageSource.camera, context);
+                            },
+                            child:const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.camera_alt_rounded),
+                                SizedBox(width: 10),
+                                Text('Камера'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+Future<void> _pickImage(ImageSource source, BuildContext context) async {
+  final picker = ImagePicker();
+  final pickedFile = await picker.pickImage(source: source);
+
+  if (pickedFile != null) {
+    await uploadImageToYandexCloud(pickedFile.path);
   }
 }
