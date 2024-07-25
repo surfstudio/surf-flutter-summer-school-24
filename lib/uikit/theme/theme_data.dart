@@ -14,13 +14,12 @@ abstract class AppThemeData {
     ),
     scaffoldBackgroundColor: _lightColorScheme.background,
     appBarTheme: AppBarTheme(backgroundColor: _lightColorScheme.background),
-    textTheme: TextTheme(bodyMedium: TextStyle(
-          color: _lightColorScheme.primary,
-          fontSize: 18,
-          fontWeight: FontWeight.w400,
-          fontFamily: 'Roboto'
-        )
-      ),
+    textTheme: TextTheme(
+        bodyMedium: TextStyle(
+            color: _lightColorScheme.primary,
+            fontSize: 18,
+            fontWeight: FontWeight.w400,
+            fontFamily: 'Roboto')),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: _lightColorScheme.background,
         selectedItemColor: _lightColorScheme.primary),
@@ -42,13 +41,12 @@ abstract class AppThemeData {
       ),
       scaffoldBackgroundColor: _darkColorScheme.background,
       appBarTheme: AppBarTheme(backgroundColor: _darkColorScheme.background),
-      textTheme: TextTheme(bodyMedium: TextStyle(
-          color: _darkColorScheme.primary,
-          fontSize: 18,
-          fontWeight: FontWeight.w400,
-          fontFamily: 'Roboto'
-        )
-      ),
+      textTheme: TextTheme(
+          bodyMedium: TextStyle(
+              color: _darkColorScheme.primary,
+              fontSize: 18,
+              fontWeight: FontWeight.w400,
+              fontFamily: 'Roboto')),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: _darkColorScheme.background,
         selectedItemColor: _darkColorScheme.primary,
