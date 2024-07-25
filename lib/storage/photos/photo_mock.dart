@@ -1,4 +1,4 @@
-import 'package:surf_flutter_summer_school_24/app/storage/photos/photo_entity.dart';
+import 'package:surf_flutter_summer_school_24/storage/photos/photo_entity.dart';
 
 class MockPhotoRepository implements IPhotoRepository {
   @override

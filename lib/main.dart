@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:surf_flutter_summer_school_24/app/feature/theme/data/theme_repository.dart';
-import 'package:surf_flutter_summer_school_24/app/feature/theme/domain/theme_controller.dart';
+import 'package:surf_flutter_summer_school_24/feature/theme/data/theme_repository.dart';
+import 'package:surf_flutter_summer_school_24/feature/theme/domain/theme_controller.dart';
 import 'package:surf_flutter_summer_school_24/app/my_app.dart';
-import 'package:surf_flutter_summer_school_24/app/storage/theme/theme_storage.dart';
+import 'package:surf_flutter_summer_school_24/storage/theme/theme_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

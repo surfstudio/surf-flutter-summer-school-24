@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:surf_flutter_summer_school_24/app/storage/images/images.dart';
-import 'package:surf_flutter_summer_school_24/app/uikit/styles/font_styles.dart';
+import 'package:surf_flutter_summer_school_24/storage/images/images.dart';
+import 'package:surf_flutter_summer_school_24/uikit/styles/font_styles.dart';
 
 
 class PhotoPage extends StatefulWidget {

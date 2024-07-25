@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:surf_flutter_summer_school_24/app/feature/screens/start_page/start_page_model.dart';
-import 'package:surf_flutter_summer_school_24/app/feature/theme/di/theme_inherited.dart';
-import 'package:surf_flutter_summer_school_24/app/feature/theme/domain/theme_controller.dart';
-import 'package:surf_flutter_summer_school_24/app/feature/theme/ui/theme_builder.dart';
-import 'package:surf_flutter_summer_school_24/app/feature/screens/start_page/start_page_widget.dart';
-import 'package:surf_flutter_summer_school_24/app/uikit/theme/theme_data.dart';
+import 'package:surf_flutter_summer_school_24/feature/theme/di/theme_inherited.dart';
+import 'package:surf_flutter_summer_school_24/feature/theme/domain/theme_controller.dart';
+import 'package:surf_flutter_summer_school_24/feature/theme/ui/theme_builder.dart';
+import 'package:surf_flutter_summer_school_24/feature/screens/start_page/start_page_widget.dart';
+import 'package:surf_flutter_summer_school_24/uikit/theme/theme_data.dart';
 
 class MainApp extends StatelessWidget {
     final ThemeController themeController;

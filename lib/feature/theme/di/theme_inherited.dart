@@ -1,6 +1,6 @@
 // ! все что ниже - ctrl+v
 
-import 'package:surf_flutter_summer_school_24/app/feature/theme/domain/theme_controller.dart';
+import 'package:surf_flutter_summer_school_24/feature/theme/domain/theme_controller.dart';
 import 'package:flutter/material.dart';
 
 class ThemeInherited extends InheritedWidget {

@@ -1,6 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:surf_flutter_summer_school_24/storage/photos/get_photo_http.dart';
+import 'package:surf_flutter_summer_school_24/storage/photos/json_photo_serializable.dart';
 
-class StartPageModel extends ChangeNotifier {}
+class StartPageModel extends ChangeNotifier {
+  final apiClient = ApiClient();
+  var _posts = <ResponseList>[];
+  List<ResponseList> get posts => _posts;
+
+  Future<void> createPosts() async {
+    final posts = await apiClient.getPhotosUsingHttp();
+    _posts += posts;
+    notifyListeners();
+  }
+
+  Future<void> deleteLastImage() async {
+
+  }
+
+  Future<void> deleteAllImage() async {}
+
+
+}
 
 class StartPageModelProvider extends InheritedNotifier {
   final StartPageModel model;
