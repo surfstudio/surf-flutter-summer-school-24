@@ -1,1 +1,1 @@
-export 'scroll_Image.dart';
+export 'scroll_image.dart';

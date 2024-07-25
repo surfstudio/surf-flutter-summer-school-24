@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+import '../../../data/data.dart';
+import '../../../domain/domain.dart';
 
 class ScrollImage extends StatefulWidget {
   const ScrollImage({super.key});
@@ -10,19 +15,24 @@ class ScrollImage extends StatefulWidget {
 class _ScrollImageState extends State<ScrollImage> {
   int activePage = 0;
   late PageController _pageController;
-  List<String> images = [
-    'https://i.pinimg.com/564x/40/e3/ed/40e3ed304ab2f8633aec33dc0460239c.jpg',
-    'https://i.pinimg.com/236x/eb/61/9f/eb619f95f9f1bf1bfe25ccb97d1587ef.jpg',
-    'https://i.pinimg.com/474x/fa/8a/ed/fa8aedb090206ac998db1118f52e72ab.jpg',
-    'https://i.pinimg.com/236x/8b/7f/86/8b7f8661933f777677fa1fa9c6138624.jpg',
-    'https://i.pinimg.com/236x/f9/6b/73/f96b735c8e0e1c8dfd0729120fc9bca9.jpg',
-    'https://i.pinimg.com/236x/d7/eb/b3/d7ebb3254756d4f83b6282c7c3868fdb.jpg'
-  ];
+  final IPhotoRepository photoRepository = MockPhotoRepository();
+
+  List<String> images = [];
+  bool isConnected = true;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.8, initialPage: 0);
+    _checkInternetConnection();
+    _loadImages();
+  }
+
+  Future<void> _checkInternetConnection() async {
+    final result = await Connectivity().checkConnectivity();
+    setState(() {
+      isConnected = result != ConnectivityResult.none;
+    });
   }
 
   @override
@@ -34,57 +44,56 @@ class _ScrollImageState extends State<ScrollImage> {
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
             height: 600,
-            child: PageView.builder(
-              itemCount: images.length,
-              pageSnapping: true,
-              controller: _pageController,
-              onPageChanged: (page) {
-                setState(() => activePage = page);
-              },
-              itemBuilder: (context, pagePosition) {
-                bool active = pagePosition == activePage;
-                return slider(images, pagePosition, active);
-              },
-            ),
+            child: isConnected
+                ? PageView.builder(
+                    itemCount: images.length,
+                    pageSnapping: true,
+                    controller: _pageController,
+                    onPageChanged: (page) {
+                      setState(() => activePage = page);
+                    },
+                    itemBuilder: (context, pagePosition) {
+                      bool active = pagePosition == activePage;
+                      return slider(images, pagePosition, active);
+                    },
+                  )
+                : Center(child: CircularProgressIndicator()),
           ),
         )
       ],
     );
   }
 
-  AnimatedContainer slider(images, pagePosition, active) {
+  AnimatedContainer slider(List<String> images, int pagePosition, bool active) {
     double margin = active ? 6 : 25;
 
     return AnimatedContainer(
-      duration: const Duration(microseconds: 800),
+      duration: const Duration(milliseconds: 200),
       curve: Curves.easeInCubic,
       margin: EdgeInsets.all(margin),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          image: DecorationImage(
-            image: NetworkImage(
-              images[pagePosition],
-            ),
-            fit: BoxFit.cover,
-          )),
-    );
-  }
-
-  imageAnimation(PageController animation, images, pagePosition) {
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (context, widget) {
-        print(pagePosition);
-        return SizedBox(
-          width: 312,
-          height: 600,
-          child: widget,
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.all(10),
-        child: Image.network(images[pagePosition]),
+        borderRadius: BorderRadius.circular(30),
+        image: DecorationImage(
+          image: CachedNetworkImageProvider(
+            images[pagePosition],
+          ),
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
+
+  Future<void> _loadImages() async {
+    final photos = await photoRepository.getPhotos();
+    setState(() {
+      images = photos.map((photo) => photo.url).toList();
+    });
+  }
 }
+
+
+
+
+
+
+

@@ -1,7 +1,9 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:surf_flutter_summer_school_24/features/tape/widgets/widgets.dart';
+import 'package:surf_flutter_summer_school_24/router/router.dart';
 
 @RoutePage()
 class TapeScreen extends StatefulWidget {
@@ -23,13 +25,26 @@ class _TapeScreenState extends State<TapeScreen> {
             centerTitle: true,
             title: Image.asset('./assets/images/logo.png',
                 color: Theme.of(context).colorScheme.primary),
+            leading: IconButton(
+              onPressed: () {
+                context.router.push(const CameraViewRoute());
+              },
+              icon: SvgPicture.asset(
+                './assets/icons/camera.svg',
+                width: 32,
+                height: 32,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
             actions: [
               IconButton(
                 onPressed: () {
                   _showBottomSheet();
                 },
-                icon: SvgPicture.asset('./assets/icons/points.svg',
-                    color: Theme.of(context).colorScheme.primary,),
+                icon: SvgPicture.asset(
+                  './assets/icons/points.svg',
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
             ],
           ),

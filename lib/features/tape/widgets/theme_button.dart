@@ -45,10 +45,7 @@ class _ThemeButtonState extends State<ThemeButton> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Тема',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
                   ),
                 ),
                 const Spacer(),
