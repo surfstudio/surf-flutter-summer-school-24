@@ -9,8 +9,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   carousel_slider: ^4.2.1
+  image_picker: ^1.1.2
+  permission_handler: ^8.1.6
+  dio: ^4.0.0
+  http: ^0.13.3
 
 dev_dependencies:
   flutter_test:
@@ -19,4 +22,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: billabong
+      fonts:
+        - asset: assets/billabong.ttf
 
