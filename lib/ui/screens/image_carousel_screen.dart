@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:surf_flutter_summer_school_24/di/dependency_injector.dart';
-import '../../domain/models/theme_controller.dart';
-import '../../domain/models/advanced_image.dart';
+import 'package:surf_flutter_summer_school_24/domain/models/theme_controller.dart';
+import 'package:surf_flutter_summer_school_24/domain/models/advanced_image.dart';
 
 class ImageCarouselScreen extends StatefulWidget {
   final List<AdvancedImage> images;
@@ -43,15 +43,30 @@ class _ImageCarouselScreenState extends State<ImageCarouselScreen> {
   }
 
   void _onPageChanged() {
-    final page = _pageController.page?.round() ?? widget.initialIndex;
-    if (_currentImageNotifier.value != page) {
-      _currentImageNotifier.value = page;
+    try {
+      final page = _pageController.page?.round() ?? widget.initialIndex;
+      if (_currentImageNotifier.value != page) {
+        _currentImageNotifier.value = page;
+      }
+    } catch (e) {
+      debugPrint('Error on page change: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Ошибка при изменении страницы')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final themeController = DependencyInjector().themeController;
+
+    if (widget.images.isEmpty) {
+      return Scaffold(
+        body: Center(
+          child: Text('Нет доступных изображений'),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: CarouselHeader(
@@ -169,7 +184,7 @@ class ImageCarousel extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 Hero(
-                  tag: 'image-${images[index].path}', // Тот же тег для Hero
+                  tag: 'image-${images[index].path}',
                   child: images[index].image,
                 ),
                 if (currentPage != index)

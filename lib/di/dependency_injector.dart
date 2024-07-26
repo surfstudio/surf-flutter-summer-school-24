@@ -19,12 +19,15 @@ class DependencyInjector {
     final themeStorage = ThemeStorage(prefs: prefs);
     final themeRepository = ThemeRepository(themeStorage: themeStorage);
     _themeController = ThemeController(themeRepository: themeRepository);
-    _advancedImageInteractor = AdvancedImageInteractor(); // Предполагается, что у AdvancedImageInteractor нет зависимостей.
+    _advancedImageInteractor =
+        AdvancedImageInteractor();
   }
 
   late final ThemeController _themeController;
   late final AdvancedImageInteractor _advancedImageInteractor;
 
   ThemeController get themeController => _themeController;
-  AdvancedImageInteractor get advancedImageInteractor => _advancedImageInteractor;
+
+  AdvancedImageInteractor get advancedImageInteractor =>
+      _advancedImageInteractor;
 }

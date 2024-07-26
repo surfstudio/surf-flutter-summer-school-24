@@ -9,13 +9,9 @@ class Utils {
   static const String oAuthToken =
       "y0_AgAAAAAJWl0DAADLWwAAAAELdA8rAADs8M9MkadMFJUc9JzghEtPyAlpBQ";
 
-
-
   static Future<void> deleteImage(String imagePath) async {
-    final uri = Uri.https('cloud-api.yandex.net', 'v1/disk/resources', {
-      "path": imagePath,
-      "permanently": "true"
-    });
+    final uri = Uri.https('cloud-api.yandex.net', 'v1/disk/resources',
+        {"path": imagePath, "permanently": "true"});
 
     final response = await http.delete(
       uri,

@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 
-import '../../domain/models/advanced_image.dart';
-import '../../utils/utils.dart';
+import 'package:surf_flutter_summer_school_24/domain/models/advanced_image.dart';
+import 'package:surf_flutter_summer_school_24/utils/utils.dart';
 import 'image_repository.dart';
 import 'package:http/http.dart' as http;
 
@@ -57,10 +57,8 @@ class RemoteImageRepository implements ImageRepository {
           final json = jsonDecode(body) as Map<String, dynamic>;
           final items = json['items'] as List<dynamic>;
 
-          //print('Batch fetched: ${items.length} items');
 
           if (items.isEmpty) {
-            //print('No more items to fetch');
             hasMore = false;
           } else {
             final processedImages = await _processItems(items);
@@ -70,11 +68,9 @@ class RemoteImageRepository implements ImageRepository {
             offset += batchLimit;
           }
         } else {
-          //print('Failed to get files. Status code: ${response.statusCode}');
           hasMore = false;
         }
       } catch (e) {
-        //print('Error fetching images: $e');
         hasMore = false;
       }
     }
@@ -131,11 +127,9 @@ class RemoteImageRepository implements ImageRepository {
           path: path,
         );
       } else {
-        //print('Failed to load image from $url. Status code: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      //print('Failed to load image from $url: $e');
       return null;
     }
   }

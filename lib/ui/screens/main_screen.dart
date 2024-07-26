@@ -14,25 +14,26 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   ValueNotifier<bool> _imagesLoaded = ValueNotifier<bool>(false);
-  ValueNotifier<List<AdvancedImage>> _imagesNotifier = ValueNotifier<List<AdvancedImage>>([]);
-  Timer? timer;
-  int attemptsCounter = 0;
+  ValueNotifier<List<AdvancedImage>> _imagesNotifier =
+      ValueNotifier<List<AdvancedImage>>([]);
+  Timer? _timer;
+  int _attemptsCounter = 0;
 
   @override
   void initState() {
     super.initState();
     _loadImages();
-    timer = Timer.periodic(const Duration(seconds: 3), (Timer t) {
-      attemptsCounter++;
-      if (_imagesLoaded.value == false && attemptsCounter > 4) {
-        attemptsCounter = 0;
+    _startPeriodicImageLoad();
+  }
+
+  void _startPeriodicImageLoad() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (Timer t) {
+      if (_imagesLoaded.value == false && _attemptsCounter > 4) {
+        _attemptsCounter = 0;
         _imagesLoaded.value = true;
       }
-      DependencyInjector().advancedImageInteractor.getAdvancedImages().then((onValue) {
-        if (_imagesNotifier.value != onValue) {
-          _imagesNotifier.value = onValue;
-        }
-      });
+      _attemptsCounter++;
+      _loadImages();
     });
   }
 
@@ -40,11 +41,22 @@ class _MainScreenState extends State<MainScreen> {
     final interactor = DependencyInjector().advancedImageInteractor;
     try {
       final images = await interactor.getAdvancedImages();
-      _imagesNotifier.value = images;
+      if (_imagesNotifier.value != images) {
+        _imagesNotifier.value = images;
+      }
       _imagesLoaded.value = true;
     } catch (error) {
+      debugPrint('Error loading images: $error');
       _imagesLoaded.value = false;
     }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _imagesLoaded.dispose();
+    _imagesNotifier.dispose();
+    super.dispose();
   }
 
   void _showBottomSheet() {
@@ -175,24 +187,25 @@ class _MainScreenState extends State<MainScreen> {
             valueListenable: _imagesNotifier,
             builder: (context, images, child) {
               return isLoaded
-                  ? _imagesNotifier.value.isNotEmpty
-                  ? ImageGrid(
-                isBlurred: images.isEmpty,
-                isDarkMode: themeController.themeMode.value == ThemeMode.dark,
-                images: images,
-                onImageTap: (index) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ImageCarouselScreen(
-                        initialIndex: index,
-                        images: images,
-                      ),
-                    ),
-                  );
-                },
-              )
-                  : ErrorView(imagesLoaded: _imagesLoaded)
+                  ? images.isNotEmpty
+                      ? ImageGrid(
+                          isBlurred: images.isEmpty,
+                          isDarkMode:
+                              themeController.themeMode.value == ThemeMode.dark,
+                          images: images,
+                          onImageTap: (index) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImageCarouselScreen(
+                                  initialIndex: index,
+                                  images: images,
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      : ErrorView(imagesLoaded: _imagesLoaded)
                   : Center(child: CircularProgressIndicator());
             },
           );
@@ -271,8 +284,10 @@ class _ImageGridState extends State<ImageGrid> {
         const double scaleThreshold = 0.01;
 
         setState(() {
-          if (_isScaling && (details.scale - _lastScale).abs() > scaleThreshold) {
-            _crossAxisCount = (_crossAxisCount * details.scale / _lastScale).clamp(_minCrossAxisCount, _maxCrossAxisCount);
+          if (_isScaling &&
+              (details.scale - _lastScale).abs() > scaleThreshold) {
+            _crossAxisCount = (_crossAxisCount * details.scale / _lastScale)
+                .clamp(_minCrossAxisCount, _maxCrossAxisCount);
             _lastScale = details.scale;
           }
         });
@@ -316,18 +331,19 @@ class _ImageGridState extends State<ImageGrid> {
                 child: Stack(
                   children: [
                     Hero(
-                      tag: 'image-${widget.images[index].path}', // Уникальный тег для Hero
+                      tag: 'image-${widget.images[index].path}',
                       child: Container(
                         decoration: BoxDecoration(
                           border: isSelected
                               ? Border.all(
-                            color: Colors.blue,
-                            width: 3,
-                          )
+                                  color: Colors.blue,
+                                  width: 3,
+                                )
                               : null,
                         ),
                         child: widget.isBlurred
-                            ? Image.asset('assets/blurred.png', fit: BoxFit.fill)
+                            ? Image.asset('assets/blurred.png',
+                                fit: BoxFit.fill)
                             : widget.images[index].image,
                       ),
                     ),
@@ -370,7 +386,9 @@ class _ImageGridState extends State<ImageGrid> {
   }
 
   Future<void> _deleteSelectedImages() async {
-    for (final index in _selectedIndexes) {
+    final imagesToRemove = List.of(_selectedIndexes);
+
+    for (final index in imagesToRemove) {
       final imagePath = widget.images[index].path;
       await Utils.deleteImage(imagePath);
     }
