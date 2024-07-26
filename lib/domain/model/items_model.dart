@@ -6,9 +6,7 @@ part 'items_model.g.dart';
 
 @JsonSerializable()
 class ItemsModel extends Equatable {
-  const ItemsModel({
-    required this.items
-  });
+  const ItemsModel({required this.items});
 
   final List<ItemModel> items;
 

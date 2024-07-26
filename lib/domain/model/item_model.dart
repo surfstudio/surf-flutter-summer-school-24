@@ -5,12 +5,11 @@ part 'item_model.g.dart';
 
 @JsonSerializable()
 class ItemModel extends Equatable {
-  const ItemModel({
-    required this.file,
-    required this.path,
-    required this.name,
-    required this.created
-  });
+  const ItemModel(
+      {required this.file,
+      required this.path,
+      required this.name,
+      required this.created});
 
   final String file;
   final String path;

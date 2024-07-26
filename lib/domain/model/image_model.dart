@@ -6,7 +6,7 @@ part 'image_model.g.dart';
 @JsonSerializable()
 class ImageModel extends Equatable {
   const ImageModel({
-    required this.href, 
+    required this.href,
   });
 
   final String href;
