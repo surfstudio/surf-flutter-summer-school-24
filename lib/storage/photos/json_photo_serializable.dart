@@ -20,16 +20,17 @@ class ResponseList {
 class ResponseElements {
   // final String resource_id;
   // // final String? public_url;
-  // final String path;
+  final String path;
   // final String? date_time;
-  final List<dynamic>? items;
+  final List<Map<String, dynamic>>? sizes;
 
-  ResponseElements({
+  ResponseElements(
+    {
     // required this.resource_id, 
     // // required this.public_url,
-    // required this.path,
+    required this.path,
     // required this.date_time,
-    required this.items,
+    required this.sizes,
     });
 
 
@@ -39,4 +40,16 @@ class ResponseElements {
   Map<String, dynamic> toJson() => _$ResponseElementsToJson(this);
   
 }
+
+// обработка последнего:
+
+// @JsonSerializable()
+// class ResponseItemsApi {
+//   final List<dynamic>? items;
+
+//   ResponseItemsApi({required this.items});
+
+//   factory ResponseItemsApi.fromJson(Map<String, dynamic> json) => _$ResponseItemsApiFromJson(json);
+//     Map<String, dynamic> toJson() => _$ResponseItemsApiToJson(this);
+// }
 

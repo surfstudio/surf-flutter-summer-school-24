@@ -3,29 +3,30 @@ import 'package:surf_flutter_summer_school_24/feature/screens/start_page/start_p
 import 'package:surf_flutter_summer_school_24/feature/theme/di/theme_inherited.dart';
 import 'package:surf_flutter_summer_school_24/feature/screens/opened_image/photo_page_widget.dart';
 import 'package:surf_flutter_summer_school_24/storage/images/images.dart';
+import 'package:surf_flutter_summer_school_24/storage/photos/get_photo_http.dart';
 import 'package:surf_flutter_summer_school_24/uikit/styles/font_styles.dart';
 
 // import 'package:http/http.dart' as http;
 // import 'dart:io';
 
 
-class WidgetForSaveModelFromInheritProvider extends StatefulWidget {
-  const WidgetForSaveModelFromInheritProvider({super.key});
+// class WidgetForSaveModelFromInheritProvider extends StatefulWidget {
+//   const WidgetForSaveModelFromInheritProvider({super.key});
 
-  @override
-  State<WidgetForSaveModelFromInheritProvider> createState() => _WidgetForSaveModelFromInheritProviderState();
-}
+//   @override
+//   State<WidgetForSaveModelFromInheritProvider> createState() => _WidgetForSaveModelFromInheritProviderState();
+// }
 
-class _WidgetForSaveModelFromInheritProviderState extends State<WidgetForSaveModelFromInheritProvider> {
-  final model = StartPageModel();
-  @override
-  Widget build(BuildContext context) {
-    return StartPageModelProvider(
-      model: model,
-      child: const StartPageWidget(),
-      );
-  }
-}
+// class _WidgetForSaveModelFromInheritProviderState extends State<WidgetForSaveModelFromInheritProvider> {
+//   final model = StartPageModel();
+//   @override
+//   Widget build(BuildContext context) {
+//     return StartPageModelProvider(
+//       model: model,
+//       child: const StartPageWidget(),
+//       );
+//   }
+// }
 
 
 class StartPageWidget extends StatelessWidget {
@@ -34,6 +35,7 @@ class StartPageWidget extends StatelessWidget {
   @override
   
   Widget build(BuildContext context) {
+    // ApiClient.getPhotosUsingHttp();
     // getPhotosUsingHttp();
     return Scaffold(
       appBar: AppBar(
@@ -66,18 +68,21 @@ class StartPageWidget extends StatelessWidget {
         ),
         itemCount: images.length,
         itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.all(1.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PhotoPage(index: index)
-                  )
-                );
-              },
-              child: Image(image: images[index], fit: BoxFit.cover)
+          return Hero(
+            tag: images[index],
+            child: Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PhotoPage(index: index)
+                    )
+                  );
+                },
+                child: Image(image: images[index], fit: BoxFit.cover)
+              ),
             ),
           );
         }
@@ -163,7 +168,7 @@ class BottomSheetContent extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                StartPageModelProvider.watch(context)?.model.deleteLastImage();
+                // StartPageModelProvider.watch(context)?.model.deleteLastImage();
               },
               child: Row(
                 children: [
@@ -178,7 +183,7 @@ class BottomSheetContent extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                StartPageModelProvider.watch(context)?.model.deleteAllImage();
+                // StartPageModelProvider.watch(context)?.model.deleteAllImage();
               },
               child: Row(
                 children: [
@@ -196,5 +201,36 @@ class BottomSheetContent extends StatelessWidget {
 }
 
 
+// class PhotoHero extends StatelessWidget {
+
+//   final Image photo;
+//   final int index;
+//   final VoidCallback? onTap;
+
+//   const PhotoHero({
+//     super.key, 
+//     required this.photo, 
+//     required this.index,
+//     this.onTap, 
+//     });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Hero(
+//         tag: photo,
+//         // child: PhotoPage(index: index),
+//         child: PhotoPage(index: index),
+//       );
+//   }
+// }
 
 
+
+// class PhotoHero extends StatelessWidget {
+//   const PhotoHero({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return const Placeholder();
+//   }
+// }

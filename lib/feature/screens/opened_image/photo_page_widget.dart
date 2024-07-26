@@ -53,7 +53,7 @@ late PageController controller;
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: '$currentIndex + 1}',
+                          text: '${currentIndex + 1}',
                           style: MyCustomStyle.mainTextBold.copyWith(fontSize: 18, color: dynamicAppBarColorForTextSpan),
                         ),
                         TextSpan(
@@ -86,14 +86,17 @@ late PageController controller;
                 );
               },
               child: Center(
-                child: Container(
-                  // margin: const EdgeInsets.symmetric(horizontal: 5),
-                  height: _height,
-                  width: 557,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    image:
-                      DecorationImage(image: images[index], fit: BoxFit.cover),
+                child: Hero(
+                  tag: images[index],
+                  child: Container(
+                    // margin: const EdgeInsets.symmetric(horizontal: 5),
+                    height: _height,
+                    width: 557,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      image:
+                        DecorationImage(image: images[index], fit: BoxFit.cover),
+                    ),
                   ),
                 ),
               ),
