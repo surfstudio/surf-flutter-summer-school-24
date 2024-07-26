@@ -1,10 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:surf_flutter_summer_school_24/data/repositories/image_repository.dart';
-import 'package:surf_flutter_summer_school_24/domain/models/advanced_image.dart';
-import 'package:surf_flutter_summer_school_24/utils/utils.dart';
+
+import 'package:flutter/cupertino.dart';
+
+import '../../domain/models/advanced_image.dart';
+import '../../utils/utils.dart';
+import 'image_repository.dart';
 import 'package:http/http.dart' as http;
 
 class RemoteImageRepository implements ImageRepository {
@@ -12,7 +14,7 @@ class RemoteImageRepository implements ImageRepository {
   List<AdvancedImage> _images = [];
   bool _isFetching = false;
   final StreamController<List<AdvancedImage>> _streamController =
-      StreamController<List<AdvancedImage>>.broadcast();
+  StreamController<List<AdvancedImage>>.broadcast();
 
   @override
   Future<List<AdvancedImage>> getImages() async {
@@ -30,8 +32,7 @@ class RemoteImageRepository implements ImageRepository {
     bool hasMore = true;
 
     while (hasMore) {
-      print(_images.length);
-      //print('Fetching batch: offset=$offset, limit=$batchLimit');
+      print('Fetching batch: offset=$offset, limit=$batchLimit');
 
       final uriGetFiles = Uri.https(
         'cloud-api.yandex.net',
@@ -39,7 +40,7 @@ class RemoteImageRepository implements ImageRepository {
         {
           'limit': '$batchLimit',
           'offset': '$offset',
-          'fields': 'items(name,sizes(url,name))',
+          'fields': 'items(name,sizes(url,name),created,path)',
         },
       );
 
@@ -90,12 +91,14 @@ class RemoteImageRepository implements ImageRepository {
 
       if (extension == 'png' || extension == 'jpg') {
         final sizes = item['sizes'] as List<dynamic>;
+        final createdAt = DateTime.parse(item['created'] as String);
+        final path = item['path'] as String;
 
         for (var size in sizes) {
           final name = size['name'] as String;
           if (name == 'XL') {
             final url = size['url'] as String;
-            final image = await _loadImage(url);
+            final image = await _loadImage(url, createdAt, path);
             if (image != null) {
               images.add(image);
             }
@@ -107,7 +110,7 @@ class RemoteImageRepository implements ImageRepository {
     return images;
   }
 
-  Future<AdvancedImage?> _loadImage(String url) async {
+  Future<AdvancedImage?> _loadImage(String url, DateTime createdAt, String path) async {
     try {
       final response = await http.get(
         Uri.parse(url),
@@ -119,12 +122,14 @@ class RemoteImageRepository implements ImageRepository {
       if (response.statusCode == 200) {
         final bytes = response.bodyBytes;
         return AdvancedImage(
-            image: Image.memory(
-              bytes,
-              fit: BoxFit.cover,
-            ),
-            id: "_placeholder",
-            createdAt: DateTime.now());
+          image: Image.memory(
+            bytes,
+            fit: BoxFit.cover,
+          ),
+          id: path,
+          createdAt: createdAt,
+          path: path,
+        );
       } else {
         //print('Failed to load image from $url. Status code: ${response.statusCode}');
         return null;

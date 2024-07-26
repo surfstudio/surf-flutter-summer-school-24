@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'package:flutter/material.dart';
 import 'package:surf_flutter_summer_school_24/di/dependency_injector.dart';
 import '../../domain/models/theme_controller.dart';
 import '../../domain/models/advanced_image.dart';
@@ -26,7 +26,10 @@ class _ImageCarouselScreenState extends State<ImageCarouselScreen> {
   void initState() {
     super.initState();
     _currentImageNotifier = ValueNotifier<int>(widget.initialIndex);
-    _pageController = PageController(initialPage: widget.initialIndex, viewportFraction: 0.8);
+    _pageController = PageController(
+      initialPage: widget.initialIndex,
+      viewportFraction: 0.8,
+    );
     _pageController.addListener(_onPageChanged);
   }
 
@@ -157,14 +160,18 @@ class ImageCarousel extends StatelessWidget {
       itemCount: images.length,
       itemBuilder: (context, index) {
         final scale = currentPage == index ? 1.0 : 0.9;
-        return Transform.scale(
+        return AnimatedScale(
           scale: scale,
+          duration: const Duration(milliseconds: 300),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(35.0),
             child: Stack(
               fit: StackFit.expand,
               children: [
-                images[index].image,
+                Hero(
+                  tag: 'image-${images[index].path}', // Тот же тег для Hero
+                  child: images[index].image,
+                ),
                 if (currentPage != index)
                   BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),

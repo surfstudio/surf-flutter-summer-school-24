@@ -9,6 +9,28 @@ class Utils {
   static const String oAuthToken =
       "y0_AgAAAAAJWl0DAADLWwAAAAELdA8rAADs8M9MkadMFJUc9JzghEtPyAlpBQ";
 
+
+
+  static Future<void> deleteImage(String imagePath) async {
+    final uri = Uri.https('cloud-api.yandex.net', 'v1/disk/resources', {
+      "path": imagePath,
+      "permanently": "true"
+    });
+
+    final response = await http.delete(
+      uri,
+      headers: {
+        HttpHeaders.authorizationHeader: 'OAuth $oAuthToken',
+      },
+    );
+
+    if (response.statusCode == 204) {
+      print('Image deleted successfully');
+    } else {
+      print('Failed to delete image: ${response.body}');
+    }
+  }
+
   static Future<void> getImageFromCamera() async {
     final picker = ImagePicker();
 

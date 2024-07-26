@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:surf_flutter_summer_school_24/di/dependency_injector.dart';
 import 'package:surf_flutter_summer_school_24/domain/models/advanced_image.dart';
@@ -15,25 +14,25 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   ValueNotifier<bool> _imagesLoaded = ValueNotifier<bool>(false);
-  ValueNotifier<List<AdvancedImage>> _imagesNotifier =
-      ValueNotifier<List<AdvancedImage>>([]);
+  ValueNotifier<List<AdvancedImage>> _imagesNotifier = ValueNotifier<List<AdvancedImage>>([]);
   Timer? timer;
+  int attemptsCounter = 0;
 
   @override
   void initState() {
     super.initState();
     _loadImages();
-    timer = Timer.periodic(Duration(seconds: 3), (Timer t) {
-      if (DependencyInjector().advancedImageInteractor.getAdvancedImages() !=
-          _imagesNotifier.value) {
-        DependencyInjector()
-            .advancedImageInteractor
-            .getAdvancedImages()
-            .then((onValue) {
-          _imagesNotifier.value = onValue;
-        });
+    timer = Timer.periodic(const Duration(seconds: 3), (Timer t) {
+      attemptsCounter++;
+      if (_imagesLoaded.value == false && attemptsCounter > 4) {
+        attemptsCounter = 0;
+        _imagesLoaded.value = true;
       }
-      ;
+      DependencyInjector().advancedImageInteractor.getAdvancedImages().then((onValue) {
+        if (_imagesNotifier.value != onValue) {
+          _imagesNotifier.value = onValue;
+        }
+      });
     });
   }
 
@@ -92,7 +91,54 @@ class _MainScreenState extends State<MainScreen> {
                   style: TextStyle(fontSize: 18, color: textColor),
                 ),
                 onTap: () {
+                  Navigator.pop(context);
+                  _showImageSourceOptions();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showImageSourceOptions() {
+    final themeController = DependencyInjector().themeController;
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        final isDarkMode = themeController.themeMode.value == ThemeMode.dark;
+        final textColor = isDarkMode ? Colors.white : Colors.black;
+
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt, color: textColor),
+                title: Text(
+                  'Из камеры',
+                  style: TextStyle(fontSize: 18, color: textColor),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
                   Utils.getImageFromCamera();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library, color: textColor),
+                title: Text(
+                  'Из галереи',
+                  style: TextStyle(fontSize: 18, color: textColor),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Utils.getImageFromGalery();
                 },
               ),
             ],
@@ -129,23 +175,24 @@ class _MainScreenState extends State<MainScreen> {
             valueListenable: _imagesNotifier,
             builder: (context, images, child) {
               return isLoaded
+                  ? _imagesNotifier.value.isNotEmpty
                   ? ImageGrid(
-                      isBlurred: images.isEmpty,
-                      isDarkMode:
-                          themeController.themeMode.value == ThemeMode.dark,
-                      images: images,
-                      onImageTap: (index) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ImageCarouselScreen(
-                              initialIndex: index,
-                              images: images,
-                            ),
-                          ),
-                        );
-                      },
-                    )
+                isBlurred: images.isEmpty,
+                isDarkMode: themeController.themeMode.value == ThemeMode.dark,
+                images: images,
+                onImageTap: (index) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ImageCarouselScreen(
+                        initialIndex: index,
+                        images: images,
+                      ),
+                    ),
+                  );
+                },
+              )
+                  : ErrorView(imagesLoaded: _imagesLoaded)
                   : Center(child: CircularProgressIndicator());
             },
           );
@@ -188,7 +235,7 @@ class MainScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class ImageGrid extends StatelessWidget {
+class ImageGrid extends StatefulWidget {
   final bool isBlurred;
   final bool isDarkMode;
   final List<AdvancedImage> images;
@@ -203,28 +250,151 @@ class ImageGrid extends StatelessWidget {
   });
 
   @override
+  _ImageGridState createState() => _ImageGridState();
+}
+
+class _ImageGridState extends State<ImageGrid> {
+  List<int> _selectedIndexes = [];
+  double _crossAxisCount = 3.0;
+  double _minCrossAxisCount = 2.0;
+  double _maxCrossAxisCount = 6.0;
+  double _lastScale = 1.0;
+  bool _isScaling = false;
+
+  @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 3,
-        mainAxisSpacing: 5,
-      ),
-      itemCount: isBlurred ? 40 : images.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () => onImageTap(index),
-          child: isBlurred
-              ? Image.asset('assets/blurred.png', fit: BoxFit.fill)
-              : images[index].image,
-        );
+    return GestureDetector(
+      onScaleStart: (ScaleStartDetails details) {
+        _isScaling = true;
       },
+      onScaleUpdate: (ScaleUpdateDetails details) {
+        const double scaleThreshold = 0.01;
+
+        setState(() {
+          if (_isScaling && (details.scale - _lastScale).abs() > scaleThreshold) {
+            _crossAxisCount = (_crossAxisCount * details.scale / _lastScale).clamp(_minCrossAxisCount, _maxCrossAxisCount);
+            _lastScale = details.scale;
+          }
+        });
+      },
+      onScaleEnd: (ScaleEndDetails details) {
+        _isScaling = false;
+        _lastScale = 1.0;
+      },
+      child: Stack(
+        children: [
+          GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: _crossAxisCount.toInt(),
+              crossAxisSpacing: 3,
+              mainAxisSpacing: 5,
+            ),
+            itemCount: widget.isBlurred ? 40 : widget.images.length,
+            itemBuilder: (context, index) {
+              final isSelected = _selectedIndexes.contains(index);
+              return GestureDetector(
+                onLongPress: () {
+                  setState(() {
+                    if (!_selectedIndexes.contains(index)) {
+                      _selectedIndexes.add(index);
+                    }
+                  });
+                },
+                onTap: () {
+                  if (_selectedIndexes.isEmpty) {
+                    widget.onImageTap(index);
+                  } else {
+                    setState(() {
+                      if (isSelected) {
+                        _selectedIndexes.remove(index);
+                      } else {
+                        _selectedIndexes.add(index);
+                      }
+                    });
+                  }
+                },
+                child: Stack(
+                  children: [
+                    Hero(
+                      tag: 'image-${widget.images[index].path}', // Уникальный тег для Hero
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: isSelected
+                              ? Border.all(
+                            color: Colors.blue,
+                            width: 3,
+                          )
+                              : null,
+                        ),
+                        child: widget.isBlurred
+                            ? Image.asset('assets/blurred.png', fit: BoxFit.fill)
+                            : widget.images[index].image,
+                      ),
+                    ),
+                    if (isSelected)
+                      const Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Icon(
+                          Icons.check_circle,
+                          color: Colors.blue,
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
+          if (_selectedIndexes.isNotEmpty)
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FloatingActionButton(
+                    onPressed: _cancelSelection,
+                    child: const Icon(Icons.cancel),
+                  ),
+                  const SizedBox(width: 16),
+                  FloatingActionButton(
+                    onPressed: _deleteSelectedImages,
+                    child: const Icon(Icons.delete),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
     );
+  }
+
+  Future<void> _deleteSelectedImages() async {
+    for (final index in _selectedIndexes) {
+      final imagePath = widget.images[index].path;
+      await Utils.deleteImage(imagePath);
+    }
+
+    setState(() {
+      _selectedIndexes.sort((a, b) => b.compareTo(a));
+      for (final index in _selectedIndexes) {
+        widget.images.removeAt(index);
+      }
+      _selectedIndexes.clear();
+    });
+  }
+
+  void _cancelSelection() {
+    setState(() {
+      _selectedIndexes.clear();
+    });
   }
 }
 
 class ErrorView extends StatelessWidget {
-  const ErrorView({super.key});
+  final ValueNotifier<bool> imagesLoaded;
+
+  const ErrorView({super.key, required this.imagesLoaded});
 
   @override
   Widget build(BuildContext context) {
@@ -257,7 +427,9 @@ class ErrorView extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              imagesLoaded.value = false;
+            },
             child: const Text('Попробовать снова'),
           ),
         ],
