@@ -1,32 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:surf_flutter_summer_school_24/features/photo_scroll/widgets/head_board.dart';
-import 'package:surf_flutter_summer_school_24/features/photo_scroll/widgets/photo_carousel.dart';
+import 'package:postogram/entity/photo_entity.dart';
+import 'package:postogram/features/photo_scroll/widgets/head_board.dart';
+import 'package:postogram/features/photo_scroll/widgets/photo_card.dart';
+import 'package:postogram/features/photo_scroll/widgets/photo_carousel.dart';
+import 'package:postogram/repository/photo_repository.dart';
 
-import '../../../data/photo.dart';
-import '../widgets/photo_card.dart';
 
-class PhotoScrollScreen extends StatelessWidget {
-  final List<PhotoCard> _cards = [
-    PhotoCard(photo: Photo(path: 'assets/images/image_1.jpg')),
-    PhotoCard(photo: Photo(path: 'assets/images/image_2.jpg')),
-    PhotoCard(photo: Photo(path: 'assets/images/image_3.jpg')),
-    PhotoCard(photo: Photo(path: 'assets/images/image_4.jpg')),
-    PhotoCard(photo: Photo(path: 'assets/images/image_5.jpg')),
-  ];
-  final ValueNotifier<int> currentPhotoIndexNotifier = ValueNotifier<int>(1);
+class PhotoScrollScreen extends StatefulWidget {
+  const PhotoScrollScreen({super.key});
 
-  PhotoScrollScreen({super.key});
+  @override
+  State<StatefulWidget> createState() => _PhotoScrollScreenState();
+}
+
+class _PhotoScrollScreenState extends State<PhotoScrollScreen> {
+  late Future<List<PhotoEntity>> _photos;
+  late List<PhotoCard> _cards;
+
+  @override
+  void initState() {
+    super.initState();
+    _photos = PhotoRepository().getAll();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: HeadBoard(
-          title: '21.02.2003',
-          photoListSize: _cards.length,
-          currentPhotoIndexNotifier: currentPhotoIndexNotifier),
-      body: PhotoCarousel(
-        cards: _cards,
-        currentPhotoIndexNotifier: currentPhotoIndexNotifier,
+        title: '21.02.2003',
+        elements_amount: _cards.length,
       ),
     );
   }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:surf_flutter_summer_school_24/data/photo.dart';
+import 'package:postogram/entity/photo_entity.dart';
 
 class PhotoCard extends StatelessWidget {
-  final Photo photo;
+  final PhotoEntity? photo;
 
-  const PhotoCard({super.key, required this.photo});
+  const PhotoCard({super.key, this.photo});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class PhotoCard extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
-        child: Image.asset(photo.path, fit: BoxFit.cover, filterQuality: FilterQuality.none),
+        child: Image.asset(photo!.url, fit: BoxFit.cover, filterQuality: FilterQuality.none),
       ),
     );
   }

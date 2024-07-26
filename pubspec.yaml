@@ -1,5 +1,5 @@
-name: surf_flutter_summer_school_24
-description: "Surf Flutter Summer School '24"
+name: postogram
+description: "Photo Search"
 publish_to: 'none'
 version: 0.1.0
 
@@ -14,7 +14,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true

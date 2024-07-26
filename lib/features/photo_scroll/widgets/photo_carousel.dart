@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:surf_flutter_summer_school_24/features/photo_scroll/widgets/photo_card.dart';
+import 'package:postogram/features/photo_scroll/widgets/photo_card.dart';
 
 class PhotoCarousel extends StatelessWidget {
   final List<PhotoCard> _cards;
