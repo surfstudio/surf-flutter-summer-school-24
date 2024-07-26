@@ -18,37 +18,34 @@ class PostogramApp extends StatefulWidget {
 
 class _PostogramAppState extends State<PostogramApp> {
   final _router = AppRouter();
-  final imageControllerApiClient = ImageControllerApiClient.create(apiUrl: dotenv.env['BASE_URL']);
+  final imageControllerApiClient =
+      ImageControllerApiClient.create(apiUrl: dotenv.env['BASE_URL']);
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => ImageViewBloc(
-            imageControllerApiClient: imageControllerApiClient
+        providers: [
+          BlocProvider(
+              create: (context) => ImageViewBloc(
+                  imageControllerApiClient: imageControllerApiClient)),
+          BlocProvider(
+            create: (context) =>
+                TapeBloc(imageControllerApiClient: imageControllerApiClient),
           )
-        ),
-        BlocProvider(
-          create: (context) => TapeBloc(
-            imageControllerApiClient: imageControllerApiClient
+        ],
+        child: ThemeInherited(
+          themeController: widget.themeController,
+          child: ThemeBuilder(
+            builder: (_, themeMode) {
+              return MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                theme: AppThemeData.lightThem,
+                darkTheme: AppThemeData.darkTheme,
+                themeMode: themeMode,
+                routerConfig: _router.config(),
+              );
+            },
           ),
-        )
-      ],
-      child: ThemeInherited(
-        themeController: widget.themeController,
-        child: ThemeBuilder(
-          builder: (_, themeMode) {
-            return MaterialApp.router(
-              debugShowCheckedModeBanner: false,
-              theme: AppThemeData.lightThem,
-              darkTheme: AppThemeData.darkTheme,
-              themeMode: themeMode,
-              routerConfig: _router.config(),
-            );
-          },
-        ),
-      )
-    );
+        ));
   }
 }
