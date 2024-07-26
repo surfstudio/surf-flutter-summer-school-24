@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CaptureButtonWidget extends StatelessWidget {
   final VoidCallback onPressed;
@@ -7,15 +8,24 @@ class CaptureButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return IconButton(
       onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        shape: CircleBorder(),
-        padding: EdgeInsets.all(20),
-        backgroundColor: Colors.white
+      icon: SvgPicture.asset(
+        './assets/icons/camera_tap.svg',
+        width: 90,
+        height: 90,
       ),
-      child: 
-      SizedBox(width: 40, height: 40,),
     );
+
+    // return ElevatedButton(
+    //   onPressed: onPressed,
+    //   style: ElevatedButton.styleFrom(
+    //     shape: CircleBorder(),
+    //     padding: EdgeInsets.all(20),
+    //     backgroundColor: Colors.white
+    //   ),
+    //   child: 
+    //   SizedBox(width: 40, height: 40,),
+    // );
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data/data.dart';
 import '../../../domain/domain.dart';
+import '../bloc/bloc.dart';
 
 class ScrollImage extends StatefulWidget {
   const ScrollImage({super.key});
@@ -15,38 +15,30 @@ class ScrollImage extends StatefulWidget {
 class _ScrollImageState extends State<ScrollImage> {
   int activePage = 0;
   late PageController _pageController;
-  final IPhotoRepository photoRepository = MockPhotoRepository();
-
-  List<String> images = [];
-  bool isConnected = true;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.8, initialPage: 0);
-    _checkInternetConnection();
-    _loadImages();
-  }
-
-  Future<void> _checkInternetConnection() async {
-    final result = await Connectivity().checkConnectivity();
-    setState(() {
-      isConnected = result != ConnectivityResult.none;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: 600,
-            child: isConnected
-                ? PageView.builder(
-                    itemCount: images.length,
+    return BlocBuilder<ImageViewBloc, ImageViewState>(
+      builder: (context, state) {
+        if (state is ImageViewLoadingState) {
+          return const Center(child: CircularProgressIndicator.adaptive());
+        } else if (state is ImageViewLoadedState) {
+          final items = state.items.items;
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: 600,
+                  child: PageView.builder(
+                    itemCount: items.length,
                     pageSnapping: true,
                     controller: _pageController,
                     onPageChanged: (page) {
@@ -54,17 +46,23 @@ class _ScrollImageState extends State<ScrollImage> {
                     },
                     itemBuilder: (context, pagePosition) {
                       bool active = pagePosition == activePage;
-                      return slider(images, pagePosition, active);
+                      return slider(items, pagePosition, active);
                     },
-                  )
-                : Center(child: CircularProgressIndicator()),
-          ),
-        )
-      ],
+                  ),
+                ),
+              )
+            ],
+          );
+        } else if (state is ImageViewFailureState) {
+          return Center(child: Text('Failed to load images: ${state.error}'));
+        } else {
+          return Container();
+        }
+      },
     );
   }
 
-  AnimatedContainer slider(List<String> images, int pagePosition, bool active) {
+  AnimatedContainer slider(List<ItemModel> items, int pagePosition, bool active) {
     double margin = active ? 6 : 25;
 
     return AnimatedContainer(
@@ -75,21 +73,15 @@ class _ScrollImageState extends State<ScrollImage> {
         borderRadius: BorderRadius.circular(30),
         image: DecorationImage(
           image: CachedNetworkImageProvider(
-            images[pagePosition],
+            items[pagePosition].file,
           ),
           fit: BoxFit.cover,
         ),
       ),
     );
   }
-
-  Future<void> _loadImages() async {
-    final photos = await photoRepository.getPhotos();
-    setState(() {
-      images = photos.map((photo) => photo.url).toList();
-    });
-  }
 }
+
 
 
 

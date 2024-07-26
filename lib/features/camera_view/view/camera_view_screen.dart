@@ -1,6 +1,7 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
@@ -17,6 +18,8 @@ class CameraViewScreen extends StatefulWidget {
 class _CameraViewScreenState extends State<CameraViewScreen> {
   late List<CameraDescription> _cameras;
   late CameraController _controller;
+  File? _image;
+  final picker = ImagePicker();
   bool _isFlashOn = false;
   bool _isCameraInitialized = false;
 
@@ -44,33 +47,10 @@ class _CameraViewScreenState extends State<CameraViewScreen> {
   }
 
   Future<void> _takePhoto(BuildContext context) async {
-    if (!_controller.value.isInitialized) {
-      return;
-    }
-
-    // Получение пути к внешнему хранилищу
-    final Directory? extDir = await getExternalStorageDirectory();
-    if (extDir == null) {
-      return;
-    }
-    // Путь к папке Screenshots в DCIM
-    final String dirPath = '${extDir.path}/DCIM/Screenshots';
-    await Directory(dirPath).create(recursive: true);
-    final String filePath = '${dirPath}/${_getTimestamp()}.jpg';
-
-    if (_controller.value.isTakingPicture) {
-      return;
-    }
-
-    try {
-      XFile picture = await _controller.takePicture();
-      await picture.saveTo(filePath);
-    } catch (e) {
-      print(e);
-    }
+    
   }
 
-  String _getTimestamp() => DateTime.now().millisecondsSinceEpoch.toString();
+  //String _getTimestamp() => DateTime.now().millisecondsSinceEpoch.toString();
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +64,11 @@ class _CameraViewScreenState extends State<CameraViewScreen> {
             top: 40,
             right: 20,
             child: CloseButtonWidget(),
+          ),
+          const Positioned(
+            top: 40,
+            left: 20,
+            child: SwitchButtonWidget(),
           ),
           Positioned(
             bottom: 40,
