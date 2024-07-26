@@ -5,14 +5,11 @@ part 'image_model.g.dart';
 
 @JsonSerializable()
 class ImageModel extends Equatable {
-  const ImageModel({required this.id, required this.url, this.createdAt
-      //required this.courses
-      });
+  const ImageModel({
+    required this.href, 
+  });
 
-  final int id;
-  final String url;
-  final DateTime? createdAt;
-  //final Courses courses;
+  final String href;
 
   factory ImageModel.fromJson(Map<String, dynamic> json) =>
       _$ImageModelFromJson(json);
@@ -20,5 +17,5 @@ class ImageModel extends Equatable {
   Map<String, dynamic> toJson() => _$ImageModelToJson(this);
 
   @override
-  List<Object> get props => [id, url, createdAt.toString()];
+  List<Object> get props => [href];
 }
