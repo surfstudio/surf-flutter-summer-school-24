@@ -13,13 +13,8 @@ abstract class ImageControllerApiClient {
       _ImageControllerApiClient;
 
   factory ImageControllerApiClient.create({String? apiUrl}) {
-    final dio = Dio(
-      BaseOptions(
-        headers: {
-          HttpHeaders.authorizationHeader: dotenv.env['TOKEN']
-        }
-      )
-    );
+    final dio = Dio(BaseOptions(
+        headers: {HttpHeaders.authorizationHeader: dotenv.env['TOKEN']}));
     //dio.interceptors.add(TokenInterceptor(storage: const FlutterSecureStorage()));
     if (apiUrl != null) {
       return ImageControllerApiClient(dio, baseUrl: apiUrl);
@@ -28,14 +23,9 @@ abstract class ImageControllerApiClient {
   }
 
   @GET('v1/disk/resources/upload')
-  Future<ImageModel> getUploadFile(
-    @Query('path') String path
-  );
+  Future<ImageModel> getUploadFile(@Query('path') String path);
 
   @GET('v1/disk/resources/files')
   Future<ItemsModel> getItems();
 
-  @POST('v1/disk/resources/upload')
-  @MultiPart()
-  Future<void> uploadImage(@Part(name: 'file') File image);
 }
