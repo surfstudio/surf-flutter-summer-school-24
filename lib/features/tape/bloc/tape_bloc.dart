@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,27 +14,23 @@ part 'tape_state.dart';
 class TapeBloc extends Bloc<TapeEvent, TapeState> {
   final ImageControllerApiClient imageControllerApiClient;
 
-  TapeBloc({
-    required this.imageControllerApiClient
-  }) : super(TapeInitialState()) {
+  TapeBloc({required this.imageControllerApiClient})
+      : super(TapeInitialState()) {
     on<TapeInit>(_onInit);
     on<UploadImageEvent>(_onUrlImageUpload);
     on<ItemsEvent>(_onItems);
   }
 
-  Future<void> _onInit(
-    TapeInit event,
-    Emitter<TapeState> emit
-  ) async {
+  Future<void> _onInit(TapeInit event, Emitter<TapeState> emit) async {
     try {
       emit(TapeLoadingState());
-      final uploadFile = await imageControllerApiClient.getUploadFile('event.path');
+
+      final uploadFile = await imageControllerApiClient.getUploadFile('name');
       final items = await imageControllerApiClient.getItems();
       emit(TapeLoadedState(
-        urlToAddImage: uploadFile, 
-        items: items
-        )
-      );
+          urlToAddImage: uploadFile,
+          items: items,
+      ));
     } catch (e) {
       emit(TapeFailureState(e));
     } finally {
@@ -40,40 +38,40 @@ class TapeBloc extends Bloc<TapeEvent, TapeState> {
     }
   }
 
-  Future<void> _onUrlImageUpload(
-    UploadImageEvent event,
-    Emitter<TapeState> emit,
-  ) async {
-    try {
-      if (state is TapeLoadedState) {
-        emit(TapeLoadingState());
-      }
-      final uploadFile = await imageControllerApiClient.getUploadFile('event.path');
+  Future<void> _onUrlImageUpload(UploadImageEvent event, Emitter<TapeState> emit) async {
+  try {
+    emit(TapeLoadingState());
 
-      emit(TapeLoadedState(
-        urlToAddImage: uploadFile, 
-        items: (state as TapeLoadedState).items
-        )
-      );
-    } catch (e) {
-      emit(TapeFailureState(e));
-    } finally {
-      event.completer?.complete();
-    }
+    // Используем имя файла из события
+    final upload = await imageControllerApiClient.getUploadFile(event.fileName);
+    final dio = Dio();
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(event.path, filename: event.fileName),
+    });
+    await dio.put(upload.href, data: formData);
+    final items = await imageControllerApiClient.getItems();
+
+    emit(TapeLoadedState(
+        urlToAddImage: upload,
+        items: items,
+    ));
+  } catch (e) {
+    emit(TapeFailureState(e));
+  } finally {
+    event.completer?.complete();
   }
+}
 
-  Future<void> _onItems(
-    ItemsEvent event,
-    Emitter<TapeState> emit
-  ) async {
+
+  Future<void> _onItems(ItemsEvent event, Emitter<TapeState> emit) async {
     try {
       emit(TapeLoadingState());
+
       final items = await imageControllerApiClient.getItems();
       emit(TapeLoadedState(
-        urlToAddImage: (state as TapeLoadedState).urlToAddImage, 
-        items: items
-        )
-      );
+          urlToAddImage: (state as TapeLoadedState).urlToAddImage,
+          items: items,
+      ));
     } catch (e) {
       emit(TapeFailureState(e));
     } finally {

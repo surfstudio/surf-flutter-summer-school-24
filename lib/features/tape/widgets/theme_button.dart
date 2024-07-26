@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 import 'package:surf_flutter_summer_school_24/features/features.dart';
-import 'package:surf_flutter_summer_school_24/uikit/uikit.dart';
 
 class ThemeButton extends StatefulWidget {
   const ThemeButton({

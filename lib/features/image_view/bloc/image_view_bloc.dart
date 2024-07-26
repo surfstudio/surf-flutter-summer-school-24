@@ -14,16 +14,14 @@ part 'image_view_state.dart';
 class ImageViewBloc extends Bloc<ImageViewEvent, ImageViewState> {
   final ImageControllerApiClient imageControllerApiClient;
 
-  ImageViewBloc({
-    required this.imageControllerApiClient
-  }) : super(ImageViewInitialState()) {
+  ImageViewBloc({required this.imageControllerApiClient})
+      : super(ImageViewInitialState()) {
     on<ImageViewItemsEvent>(_onItems);
+    on<ImageViewPageChangedEvent>(_onPageChanged);
   }
 
   Future<void> _onItems(
-    ImageViewItemsEvent event,
-    Emitter<ImageViewState> emit
-  ) async {
+      ImageViewItemsEvent event, Emitter<ImageViewState> emit) async {
     try {
       emit(ImageViewLoadingState());
       final items = await imageControllerApiClient.getItems();
@@ -36,4 +34,13 @@ class ImageViewBloc extends Bloc<ImageViewEvent, ImageViewState> {
       event.completer?.complete();
     }
   }
+
+  void _onPageChanged(ImageViewPageChangedEvent event, Emitter<ImageViewState> emit) {
+    if (state is ImageViewLoadedState) {
+      final loadedState = state as ImageViewLoadedState;
+      emit(ImageViewLoadedState(items: loadedState.items, activePage: event.pageIndex));
+    }
+  }
 }
+
+

@@ -4,7 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 class CaptureButtonWidget extends StatelessWidget {
   final VoidCallback onPressed;
 
-  const CaptureButtonWidget({required this.onPressed, Key? key}) : super(key: key);
+  const CaptureButtonWidget({required this.onPressed, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class CaptureButtonWidget extends StatelessWidget {
     //     padding: EdgeInsets.all(20),
     //     backgroundColor: Colors.white
     //   ),
-    //   child: 
+    //   child:
     //   SizedBox(width: 40, height: 40,),
     // );
   }

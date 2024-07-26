@@ -5,7 +5,7 @@ class CloseButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: const Icon(
-        Icons.close, 
+        Icons.close,
         color: Colors.white,
         size: 32,
       ),
@@ -15,4 +15,3 @@ class CloseButtonWidget extends StatelessWidget {
     );
   }
 }
-

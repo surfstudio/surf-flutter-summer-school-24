@@ -12,10 +12,7 @@ final class TapeInitialState extends TapeState {}
 final class TapeLoadingState extends TapeState {}
 
 final class TapeLoadedState extends TapeState {
-  const TapeLoadedState({
-    required this.urlToAddImage,
-    required this.items
-  });
+  const TapeLoadedState({required this.urlToAddImage, required this.items});
 
   final ImageModel urlToAddImage;
   final ItemsModel items;
@@ -25,9 +22,7 @@ final class TapeLoadedState extends TapeState {
 }
 
 final class TapeFailureState extends TapeState {
-  const TapeFailureState(
-    this.error
-  );
+  const TapeFailureState(this.error);
 
   final Object error;
 

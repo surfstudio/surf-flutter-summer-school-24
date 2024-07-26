@@ -42,7 +42,10 @@ class _ScrollImageState extends State<ScrollImage> {
                     pageSnapping: true,
                     controller: _pageController,
                     onPageChanged: (page) {
-                      setState(() => activePage = page);
+                      setState(() {
+                        activePage = page;
+                        BlocProvider.of<ImageViewBloc>(context).add(ImageViewPageChangedEvent(page));
+                      });
                     },
                     itemBuilder: (context, pagePosition) {
                       bool active = pagePosition == activePage;
@@ -50,7 +53,7 @@ class _ScrollImageState extends State<ScrollImage> {
                     },
                   ),
                 ),
-              )
+              ),
             ],
           );
         } else if (state is ImageViewFailureState) {
@@ -69,23 +72,15 @@ class _ScrollImageState extends State<ScrollImage> {
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeInCubic,
       margin: EdgeInsets.all(margin),
-      decoration: BoxDecoration(
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(30),
-        image: DecorationImage(
-          image: CachedNetworkImageProvider(
-            items[pagePosition].file,
-          ),
+        child: CachedNetworkImage(
+          imageUrl: items[pagePosition].file,
+          placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
           fit: BoxFit.cover,
         ),
       ),
     );
   }
 }
-
-
-
-
-
-
-
-

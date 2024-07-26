@@ -4,9 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:surf_flutter_summer_school_24/features/tape/bloc/tape_bloc.dart';
 import 'package:surf_flutter_summer_school_24/router/router.dart';
 
-import '../../../data/data.dart';
-import '../../../domain/domain.dart';
-
 class ImageBox extends StatefulWidget {
   const ImageBox({super.key});
 
@@ -43,10 +40,13 @@ class _ImageBoxState extends State<ImageBox> {
                       context.router.push(const ImageViewRoute());
                     },
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(2),
-                      child: Image.network(
-                        items[index].file,
+                      borderRadius: BorderRadius.circular(8),
+                      child: FadeInImage.assetNetwork(
+                        placeholder: './assets/images/placeholder.png', 
+                        image: items[index].file,
                         fit: BoxFit.cover,
+                        fadeInDuration: const Duration(milliseconds: 300),
+                        fadeOutDuration: const Duration(milliseconds: 300),
                       ),
                     ),
                   );
@@ -70,5 +70,3 @@ class _ImageBoxState extends State<ImageBox> {
     );
   }
 }
-
-

@@ -46,9 +46,7 @@ class _CameraViewScreenState extends State<CameraViewScreen> {
     super.dispose();
   }
 
-  Future<void> _takePhoto(BuildContext context) async {
-    
-  }
+  Future<void> _takePhoto(BuildContext context) async {}
 
   //String _getTimestamp() => DateTime.now().millisecondsSinceEpoch.toString();
 
