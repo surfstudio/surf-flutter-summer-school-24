@@ -1,6 +1,6 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:retrofit/http.dart';
 
 import '../../../domain/domain.dart';
@@ -13,17 +13,29 @@ abstract class ImageControllerApiClient {
       _ImageControllerApiClient;
 
   factory ImageControllerApiClient.create({String? apiUrl}) {
-    final dio = Dio();
+    final dio = Dio(
+      BaseOptions(
+        headers: {
+          HttpHeaders.authorizationHeader: dotenv.env['TOKEN']
+        }
+      )
+    );
+    //dio.interceptors.add(TokenInterceptor(storage: const FlutterSecureStorage()));
     if (apiUrl != null) {
       return ImageControllerApiClient(dio, baseUrl: apiUrl);
     }
     return ImageControllerApiClient(dio);
   }
 
-  @GET('')
-  Future<List<ImageModel>> getAllImages();
+  @GET('v1/disk/resources/upload')
+  Future<ImageModel> getUploadFile(
+    @Query('path') String path
+  );
 
-  @POST('')
+  @GET('v1/disk/resources/files')
+  Future<ItemsModel> getItems();
+
+  @POST('v1/disk/resources/upload')
   @MultiPart()
-  Future<void> uploadImage(@Part(name: 'image') File image);
+  Future<void> uploadImage(@Part(name: 'file') File image);
 }

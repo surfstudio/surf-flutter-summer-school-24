@@ -19,20 +19,20 @@ class _ImageControllerApiClient implements ImageControllerApiClient {
   String? baseUrl;
 
   @override
-  Future<List<ImageModel>> getAllImages() async {
+  Future<ImageModel> getUploadFile(String path) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'path': path};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
-        .fetch<List<dynamic>>(_setStreamType<List<ImageModel>>(Options(
+        .fetch<Map<String, dynamic>>(_setStreamType<ImageModel>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              '',
+              'v1/disk/resources/upload',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -41,9 +41,34 @@ class _ImageControllerApiClient implements ImageControllerApiClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    var _value = _result.data!
-        .map((dynamic i) => ImageModel.fromJson(i as Map<String, dynamic>))
-        .toList();
+    final _value = ImageModel.fromJson(_result.data!);
+    return _value;
+  }
+
+  @override
+  Future<ItemsModel> getItems() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<ItemsModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'v1/disk/resources/files',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final _value = ItemsModel.fromJson(_result.data!);
     return _value;
   }
 
@@ -54,7 +79,7 @@ class _ImageControllerApiClient implements ImageControllerApiClient {
     final _headers = <String, dynamic>{};
     final _data = FormData();
     _data.files.add(MapEntry(
-      'image',
+      'file',
       MultipartFile.fromFileSync(
         image.path,
         filename: image.path.split(Platform.pathSeparator).last,
@@ -68,7 +93,7 @@ class _ImageControllerApiClient implements ImageControllerApiClient {
     )
         .compose(
           _dio.options,
-          '',
+          'v1/disk/resources/upload',
           queryParameters: queryParameters,
           data: _data,
         )
