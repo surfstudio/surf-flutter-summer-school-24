@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:surf_flutter_summer_school_24/di/dependency_injector.dart';
 import 'package:surf_flutter_summer_school_24/domain/models/advanced_image.dart';
-import 'package:surf_flutter_summer_school_24/domain/interactors/advanced_image_interactor.dart';
+import 'package:surf_flutter_summer_school_24/utils/utils.dart';
 import 'image_carousel_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -12,13 +14,27 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final ValueNotifier<bool> _imagesLoaded = ValueNotifier<bool>(false);
-  final ValueNotifier<List<AdvancedImage>> _imagesNotifier = ValueNotifier<List<AdvancedImage>>([]);
+  ValueNotifier<bool> _imagesLoaded = ValueNotifier<bool>(false);
+  ValueNotifier<List<AdvancedImage>> _imagesNotifier =
+      ValueNotifier<List<AdvancedImage>>([]);
+  Timer? timer;
 
   @override
   void initState() {
     super.initState();
     _loadImages();
+    timer = Timer.periodic(Duration(seconds: 3), (Timer t) {
+      if (DependencyInjector().advancedImageInteractor.getAdvancedImages() !=
+          _imagesNotifier.value) {
+        DependencyInjector()
+            .advancedImageInteractor
+            .getAdvancedImages()
+            .then((onValue) {
+          _imagesNotifier.value = onValue;
+        });
+      }
+      ;
+    });
   }
 
   Future<void> _loadImages() async {
@@ -28,7 +44,7 @@ class _MainScreenState extends State<MainScreen> {
       _imagesNotifier.value = images;
       _imagesLoaded.value = true;
     } catch (error) {
-      _imagesLoaded.value = true;
+      _imagesLoaded.value = false;
     }
   }
 
@@ -76,7 +92,7 @@ class _MainScreenState extends State<MainScreen> {
                   style: TextStyle(fontSize: 18, color: textColor),
                 ),
                 onTap: () {
-                  //TODO: добавить реализацию загрузки фото
+                  Utils.getImageFromCamera();
                 },
               ),
             ],
@@ -114,21 +130,22 @@ class _MainScreenState extends State<MainScreen> {
             builder: (context, images, child) {
               return isLoaded
                   ? ImageGrid(
-                isBlurred: images.isEmpty,
-                isDarkMode: themeController.themeMode.value == ThemeMode.dark,
-                images: images,
-                onImageTap: (index) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ImageCarouselScreen(
-                        initialIndex: index,
-                        images: images,
-                      ),
-                    ),
-                  );
-                },
-              )
+                      isBlurred: images.isEmpty,
+                      isDarkMode:
+                          themeController.themeMode.value == ThemeMode.dark,
+                      images: images,
+                      onImageTap: (index) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ImageCarouselScreen(
+                              initialIndex: index,
+                              images: images,
+                            ),
+                          ),
+                        );
+                      },
+                    )
                   : Center(child: CircularProgressIndicator());
             },
           );
@@ -240,9 +257,7 @@ class ErrorView extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: () {
-
-            },
+            onPressed: () {},
             child: const Text('Попробовать снова'),
           ),
         ],
