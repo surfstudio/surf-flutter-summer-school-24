@@ -5,11 +5,11 @@ import 'package:surf_flutter_summer_school_24/domain/models/theme_controller.dar
 import 'package:surf_flutter_summer_school_24/ui/screens/main_screen.dart';
 import 'package:surf_flutter_summer_school_24/ui/widgets/theme_builder.dart';
 import 'package:surf_flutter_summer_school_24/di/theme_inherited.dart';
+import 'package:surf_flutter_summer_school_24/utils/utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Инициализация зависимостей
   await DependencyInjector().initialize();
 
   final themeController = DependencyInjector().themeController;

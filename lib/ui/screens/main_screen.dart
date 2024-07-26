@@ -13,7 +13,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final ValueNotifier<bool> _imagesLoaded = ValueNotifier<bool>(false);
-  List<AdvancedImage> _images = [];
+  final ValueNotifier<List<AdvancedImage>> _imagesNotifier = ValueNotifier<List<AdvancedImage>>([]);
 
   @override
   void initState() {
@@ -24,11 +24,11 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> _loadImages() async {
     final interactor = DependencyInjector().advancedImageInteractor;
     try {
-      _images = await interactor.getAdvancedImages();
+      final images = await interactor.getAdvancedImages();
+      _imagesNotifier.value = images;
       _imagesLoaded.value = true;
     } catch (error) {
-      // Handle error if needed
-      _imagesLoaded.value = true; // Or handle error state
+      _imagesLoaded.value = true;
     }
   }
 
@@ -76,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
                   style: TextStyle(fontSize: 18, color: textColor),
                 ),
                 onTap: () {
-                  //TODO: потом
+                  //TODO: добавить реализацию загрузки фото
                 },
               ),
             ],
@@ -109,22 +109,27 @@ class _MainScreenState extends State<MainScreen> {
         builder: (context, isLoaded, child) {
           final themeController = DependencyInjector().themeController;
 
-          return ImageGrid(
-            isBlurred: !isLoaded,
-            isDarkMode: themeController.themeMode.value == ThemeMode.dark,
-            images: _images,
-            onImageTap: (index) {
-              if (isLoaded) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ImageCarouselScreen(
-                      initialIndex: index,
-                      imageUrls: _images.map((img) => img.url).toList(),  // Исправлено на imageUrls
+          return ValueListenableBuilder<List<AdvancedImage>>(
+            valueListenable: _imagesNotifier,
+            builder: (context, images, child) {
+              return isLoaded
+                  ? ImageGrid(
+                isBlurred: images.isEmpty,
+                isDarkMode: themeController.themeMode.value == ThemeMode.dark,
+                images: images,
+                onImageTap: (index) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ImageCarouselScreen(
+                        initialIndex: index,
+                        images: images,
+                      ),
                     ),
-                  ),
-                );
-              }
+                  );
+                },
+              )
+                  : Center(child: CircularProgressIndicator());
             },
           );
         },
@@ -172,7 +177,7 @@ class ImageGrid extends StatelessWidget {
   final List<AdvancedImage> images;
   final Function(int) onImageTap;
 
-  ImageGrid({
+  const ImageGrid({
     super.key,
     required this.isBlurred,
     required this.isDarkMode,
@@ -192,13 +197,9 @@ class ImageGrid extends StatelessWidget {
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () => onImageTap(index),
-          child: Image.network(
-            isBlurred ? 'assets/blurred.png' : images[index % images.length].url,
-            fit: BoxFit.fill,
-            errorBuilder: (context, error, stackTrace) {
-              return Center(child: Icon(Icons.error, color: Colors.red));
-            },
-          ),
+          child: isBlurred
+              ? Image.asset('assets/blurred.png', fit: BoxFit.fill)
+              : images[index].image,
         );
       },
     );
@@ -240,7 +241,7 @@ class ErrorView extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
-              // Handle retry logic here
+
             },
             child: const Text('Попробовать снова'),
           ),

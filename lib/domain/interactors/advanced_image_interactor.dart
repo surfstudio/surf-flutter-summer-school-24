@@ -1,8 +1,10 @@
+import 'package:surf_flutter_summer_school_24/data/repositories/image_repository.dart';
+import 'package:surf_flutter_summer_school_24/data/repositories/remote_image_repository.dart';
 import 'package:surf_flutter_summer_school_24/domain/models/advanced_image.dart';
 import 'package:surf_flutter_summer_school_24/data/repositories/mock_image_repository.dart';
 
 class AdvancedImageInteractor {
-  final MockImageRepository _repository = MockImageRepository();
+  final ImageRepository _repository = RemoteImageRepository();
 
   Future<List<AdvancedImage>> getAdvancedImages() async {
     return await _repository.getImages();

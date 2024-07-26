@@ -11,6 +11,9 @@ dependencies:
   shared_preferences: ^2.2.3
   flutter:
     sdk: flutter
+  http: ^1.2.2
+  dio: ^5.5.0+1
+  image_picker: ^1.1.2
 
 
 dev_dependencies:
