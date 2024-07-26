@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'domain/controllers/photo_controller.dart';
 import 'domain/models/custom_theme_mode.dart';
 import 'service_locator.dart';
 import 'domain/controllers/theme_controller.dart';
@@ -22,11 +23,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<ThemeController>(
           create: (_) => getIt<ThemeController>(),
         ),
+        ChangeNotifierProvider<PhotoController>(
+          create: (_) => PhotoController(),
+        ),
       ],
       child: Consumer<ThemeController>(
         builder: (context, themeController, child) {
           return MaterialApp(
-            title: 'Flutter Demo',
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
             themeMode: _getThemeMode(themeController.themeMode),
